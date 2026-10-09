@@ -73,3 +73,11 @@ Las comprobaciones de navegador están en `scripts/check_browser.cjs`; requieren
 ## Flujo obligatorio
 
 Superpowers, UI UX Designer, Web Design y web-design-guidelines son obligatorios según `AGENTS.md`. El plan de trabajo y las decisiones están en `docs/`; no se requiere instalar de nuevo los complementos que ya están disponibles en la sesión.
+
+## Versiones y continuidad
+
+Repositorio: https://github.com/Memilio200104/JazAr-Arte-y-dise-o
+
+`main` y `master` conservan la demo base (`2689de8`). `codex/pulido-visual` contiene la identidad original, las imágenes conceptuales por producto y el proceso animado. Cambiar de rama afecta al mismo runserver; detenerlo antes de cambiar y arrancarlo de nuevo después.
+
+GitHub respalda el código: no hospeda Django ni traslada esta conversación a un ejecutor cloud. No hay una automatización de reanudación configurada. El estado de entrega y los pendientes están en `docs/pulido-visual.md`.

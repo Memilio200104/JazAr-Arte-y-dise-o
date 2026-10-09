@@ -8,8 +8,9 @@
   <meta name="theme-color" content="#FAFAF8">
   <title>{% block title %}JazAr Arte y Diseño{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <link rel="stylesheet" href="{% static 'css/polish.css' %}">
   <link rel="preload" href="{% static 'fonts/space-grotesk-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
-  <noscript><style>.filters,.menu-toggle{display:none!important}@media(max-width:1023px){.site-header{height:auto;min-height:72px;flex-wrap:wrap;padding-top:20px;padding-bottom:20px}.site-header nav{display:flex;position:static;flex-basis:100%;box-shadow:none;padding:12px 0 0}.future-nav-space{display:none}}</style></noscript>
+  <noscript><style>.site-header{position:static}html{scroll-padding-top:16px}.filters,.menu-toggle,.process-scene{display:none!important}.process-layout{grid-template-columns:1fr!important}.scene-mobile-image{display:block;width:100%;max-width:350px;aspect-ratio:1;object-fit:cover;margin-bottom:24px}@media(max-width:1023px){.site-header{height:auto;min-height:72px;flex-wrap:wrap;padding-top:20px;padding-bottom:20px}.site-header nav{display:flex;position:static;flex-basis:100%;box-shadow:none;padding:12px 0 0}.future-nav-space{display:none}}</style></noscript>
   {% block styles %}{% endblock %}
 </head>
 <body>

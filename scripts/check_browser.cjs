@@ -18,13 +18,49 @@ let browser;
   await page.goto("http://127.0.0.1:8000/", { waitUntil: "networkidle" });
   await page.screenshot({ path: "artifacts/desktop.png" });
   assert.equal(await page.locator(".product").count(), 6);
-  for (const img of await page.locator("img").all()) {
+  for (const img of await page
+    .locator(".hero-image, .product-visual img, .brand-portrait img")
+    .all()) {
     await img.scrollIntoViewIfNeeded();
     await img.evaluate((i) => i.decode());
   }
+  for (const src of await page
+    .locator("img")
+    .evaluateAll((images) => [...new Set(images.map((image) => image.src))])) {
+    assert.equal((await page.request.get(src)).status(), 200, src);
+  }
+  await page.locator(".process-scene").scrollIntoViewIfNeeded();
+  for (const step of ["4", "2", "5"]) {
+    await page.locator(`[data-goto-step="${step}"]`).click();
+    await page.waitForFunction(
+      (value) =>
+        document.querySelector("#process-number").textContent === `0${value}`,
+      step,
+    );
+    await page
+      .locator(`[data-frame="${step}"] img`)
+      .evaluate((image) => image.decode());
+    await page.waitForFunction(
+      (value) =>
+        [...document.querySelectorAll(".process-layer")].every(
+          (layer) =>
+            Number(getComputedStyle(layer).opacity) ===
+            (layer.dataset.frame === value ? 1 : 0),
+        ),
+      step,
+    );
+  }
+  await page.screenshot({ path: "artifacts/process.png" });
   await page.locator('[data-filter="dtf"]').click();
   assert.equal(await page.locator(".product:visible").count(), 2);
   assert.match(page.url(), /tecnica=dtf/);
+  await page.locator('[data-filter="dtf"]').evaluate(button => { button.dataset.filter = "empty-test"; });
+  await page.locator('[data-filter="empty-test"]').click();
+  assert.equal(await page.locator('.catalog-empty').isVisible(), true);
+  await page.locator('[data-reset-filter]').click();
+  assert.equal(await page.locator('.product:visible').count(), 6);
+  await page.locator('[data-filter="empty-test"]').evaluate(button => { button.dataset.filter = "dtf"; });
+  await page.locator('[data-filter="dtf"]').click();
   await page.locator(".product:visible .text-link").first().click();
   assert.equal(await page.locator("#id_interest").inputValue(), "prendas");
   await page.locator('[data-filter="all"]').click();
@@ -80,6 +116,7 @@ let browser;
   assert.equal(await noJS.locator("h1").isVisible(), true);
   assert.equal(await noJS.locator("#contact-form").isVisible(), true);
   assert.equal(await noJS.locator("#site-nav").isVisible(), true);
+  assert.equal(await noJS.locator(".process-selector").isVisible(), false);
   await noJS.close();
   assert.deepEqual(failures, []);
   console.log(

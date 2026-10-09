@@ -35,10 +35,12 @@ No se afirma que esta entrega sea una imagen de produccion reproducible ya audit
 Con Docker Desktop iniciado en modo contenedores Linux:
 
 ```powershell
-Copy-Item .env.example .env
-# Editar DJANGO_SECRET_KEY con un secreto generado aleatoriamente.
+python scripts/setup_local.py
+# Conserva el .env existente; revisar variables antes de usarlo en produccion.
 docker compose config --quiet
 docker compose up --build -d
+# Solo para una demo: cargar conceptos en la base del contenedor.
+docker compose exec web python manage.py seed_demo
 docker compose exec nginx nginx -t
 Invoke-RestMethod http://localhost:8080/healthz/
 docker compose logs --tail=50 web nginx

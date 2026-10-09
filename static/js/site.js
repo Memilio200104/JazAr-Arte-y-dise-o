@@ -42,9 +42,12 @@
         card.dataset.technique !== button.dataset.filter;
     });
     const count = cards.filter((card) => !card.hidden).length;
+    document.querySelector(".catalog-empty").hidden =
+      count > 0 || cards.length === 0;
     document.querySelector(".result-count").textContent =
       `${count} ${count === 1 ? "posibilidad" : "posibilidades"}`;
     window.ScrollTrigger?.refresh();
+    document.dispatchEvent(new Event("jazar:filter"));
     if (updateUrl) {
       const url = new URL(location.href);
       if (button.dataset.filter === "all") url.searchParams.delete("tecnica");
@@ -55,6 +58,12 @@
   filterButtons.forEach((button) =>
     button.addEventListener("click", () => applyFilter(button, true)),
   );
+  document
+    .querySelector("[data-reset-filter]")
+    ?.addEventListener("click", () => {
+      applyFilter(filterButtons[0], true);
+      filterButtons[0].focus();
+    });
   const restoreFilter = () => {
     const value = new URL(location.href).searchParams.get("tecnica") || "all";
     applyFilter(
@@ -72,6 +81,18 @@
     input?.setAttribute("aria-describedby", error.id);
   });
   const form = document.querySelector("#contact-form");
+  document.querySelectorAll("[data-goto-step]").forEach((button) => {
+    button.addEventListener("click", () => {
+      document
+        .querySelector(`#paso-${button.dataset.gotoStep}`)
+        ?.scrollIntoView({
+          block: "center",
+          behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+            ? "instant"
+            : "smooth",
+        });
+    });
+  });
   let dirty = false;
   form?.addEventListener("input", () => {
     dirty = true;

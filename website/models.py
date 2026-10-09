@@ -53,3 +53,13 @@ class Product(models.Model):
     @property
     def technique(self):
         return self.get_technique_key_display()
+
+    @property
+    def display_image(self):
+        if self.is_concept and self.image == "images/collection-concept.webp":
+            return {
+                "playeras": "images/shirt-concept.webp",
+                "tazas": "images/mug-concept.webp",
+                "piezas": "images/vase-concept.webp",
+            }.get(self.slug, self.image)
+        return self.image
