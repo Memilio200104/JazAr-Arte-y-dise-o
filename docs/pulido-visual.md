@@ -30,6 +30,10 @@ La demo y el pulido comparten el directorio actual para que runserver siga mostr
 
 ## Próximos entregables del Módulo 1
 
+### Corrección de hero en Full HD
+
+El hero anterior solo desplazaba la imagen 32 px; no existía un recorrido fijado al scroll. Se añadió una timeline GSAP con pin bajo el encabezado y recorrido de 85% de la altura del viewport (918 px en 1920 x 1080), zoom del producto y desplazamiento de la edición. Se conserva scroll nativo, enlaces utilizables y desmontaje al activar movimiento reducido o pasar a móvil. `scripts/check_hero.cjs` reproduce el fallo previo y verifica pin y limpieza; la suite completa de navegador también pasa. Revisión Guidelines: transforms únicamente, sin interceptar rueda/teclado y con alternativa sin animación.
+
 1. Revisar visualmente esta dirección con Jazmin y sustituir conceptos por fotos autorizadas.
 2. Completar datos comerciales, condiciones de cotización y aviso de privacidad.
 3. Configurar Gmail y probar recepción real antes de publicar.

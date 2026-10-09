@@ -62,17 +62,21 @@
   media.add(
     "(min-width:1024px) and (min-height:760px) and (prefers-reduced-motion:no-preference)",
     () => {
-      gsap.to(".hero-image", {
-        y: -32,
-        scale: 1.025,
-        ease: "none",
+      const heroStory = gsap.timeline({
         scrollTrigger: {
+          id: "hero-story",
           trigger: ".hero",
-          start: "top top",
-          end: "bottom top",
+          start: () => `top top+=${document.querySelector('.site-header').offsetHeight}`,
+          end: () => `+=${Math.round(window.innerHeight * .85)}`,
+          pin: true,
           scrub: 0.4,
+          invalidateOnRefresh: true,
         },
       });
+      heroStory
+        .to('.hero-image', { scale: 1.14, y: -28, transformOrigin: '75% 50%', ease: 'none', duration: 1 }, 0)
+        .to('.hero h1', { y: -22, ease: 'none', duration: 1 }, 0)
+        .fromTo('.hero-edition', { y: 0 }, { y: 120, ease: 'none', duration: 1 }, 0);
       gsap.fromTo(
         ".brand-portrait img",
         { y: 10 },
