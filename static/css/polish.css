@@ -322,7 +322,21 @@ button {
     flex-basis: 88px;
   }
 }
-@media (max-width: 1023px), (max-height: 759px) {
+@media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+  .process-scene {
+    position: sticky;
+    top: 100px;
+  }
+  .process-image-wrap {
+    width: min(100%, calc(100svh - 300px));
+    max-height: none;
+    margin-inline: auto;
+  }
+  .process-steps li {
+    min-height: 70svh;
+  }
+}
+@media (max-width: 1023px), (max-height: 599px) {
   .process-layout {
     grid-template-columns: 1fr;
   }

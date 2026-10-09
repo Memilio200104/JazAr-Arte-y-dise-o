@@ -32,6 +32,8 @@ La demo y el pulido comparten el directorio actual para que runserver siga mostr
 
 ### Corrección de hero en Full HD
 
+Corrección posterior a las capturas del usuario: el problema reportado pertenecía al proceso creativo, no al hero. El breakpoint de 760 px desactivaba la escena incluso en escritorios anchos con menor altura CSS por escalado/zoom y barras del navegador. Ahora el proceso conserva sticky desde 1024 x 600, ajusta la imagen a la altura disponible y mantiene recorrido vertical; móvil, alturas menores y movimiento reducido conservan la alternativa en flujo. Se separaron las condiciones del hero y del proceso. `scripts/check_process.cjs` falló antes a 1536 x 728 y pasa después a 1920 x 1080, 1536 x 728 y 1280 x 650; verifica etapas reversibles y que la escena completa quepa bajo el encabezado. Pruebas de hero y navegador completas también pasan.
+
 El hero anterior solo desplazaba la imagen 32 px; no existía un recorrido fijado al scroll. Se añadió una timeline GSAP con pin bajo el encabezado y recorrido de 85% de la altura del viewport (918 px en 1920 x 1080), zoom del producto y desplazamiento de la edición. Se conserva scroll nativo, enlaces utilizables y desmontaje al activar movimiento reducido o pasar a móvil. `scripts/check_hero.cjs` reproduce el fallo previo y verifica pin y limpieza; la suite completa de navegador también pasa. Revisión Guidelines: transforms únicamente, sin interceptar rueda/teclado y con alternativa sin animación.
 
 1. Revisar visualmente esta dirección con Jazmin y sustituir conceptos por fotos autorizadas.

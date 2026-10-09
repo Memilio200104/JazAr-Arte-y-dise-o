@@ -77,6 +77,11 @@
         .to('.hero-image', { scale: 1.14, y: -28, transformOrigin: '75% 50%', ease: 'none', duration: 1 }, 0)
         .to('.hero h1', { y: -22, ease: 'none', duration: 1 }, 0)
         .fromTo('.hero-edition', { y: 0 }, { y: 120, ease: 'none', duration: 1 }, 0);
+    },
+  );
+  media.add(
+    "(min-width:1024px) and (min-height:600px) and (prefers-reduced-motion:no-preference)",
+    () => {
       gsap.fromTo(
         ".brand-portrait img",
         { y: 10 },
