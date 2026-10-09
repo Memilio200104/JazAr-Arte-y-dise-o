@@ -1,0 +1,24 @@
+server {
+    listen 80 default_server;
+    server_name _;
+    return 444;
+}
+
+server {
+    listen 80;
+    server_name ${DOMAIN};
+    server_tokens off;
+    client_max_body_size 1m;
+    add_header X-Content-Type-Options nosniff always;
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+        try_files $uri =404;
+    }
+    location /static/ {
+        alias /srv/static/;
+        expires 1h;
+    }
+    location / {
+        include /etc/nginx/includes/proxy.conf;
+    }
+}

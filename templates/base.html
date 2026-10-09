@@ -1,0 +1,20 @@
+{% load static %}
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Prendas, regalos y piezas personalizadas con el criterio de Jazmin Zarate, diseñadora gráfica.">
+  <meta name="theme-color" content="#FAFAF8">
+  <title>{% block title %}JazAr Arte y Diseño{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  <link rel="preload" href="{% static 'fonts/space-grotesk-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <noscript><style>.filters,.menu-toggle{display:none!important}@media(max-width:1023px){.site-header{height:auto;min-height:72px;flex-wrap:wrap;padding-top:20px;padding-bottom:20px}.site-header nav{display:flex;position:static;flex-basis:100%;box-shadow:none;padding:12px 0 0}.future-nav-space{display:none}}</style></noscript>
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  {% block content %}{% endblock %}
+  {% block motion %}{% endblock %}
+</body>
+</html>

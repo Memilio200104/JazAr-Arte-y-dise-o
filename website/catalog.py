@@ -1,0 +1,32 @@
+PRODUCTS = [
+    {"id": "playeras", "name": "Prendas con identidad", "category": "Prendas", "interest": "prendas",
+     "technique": "DTF", "technique_key": "dtf", "image": "images/collection-concept.webp",
+     "description": "Gr\u00e1ficos y color que se adaptan a tu prenda y a lo que quieres expresar."},
+    {"id": "tazas", "name": "Un regalo cotidiano", "category": "Regalos", "interest": "regalos",
+     "technique": "Sublimaci\u00f3n", "technique_key": "sublimacion", "image": "images/collection-concept.webp",
+     "description": "Una idea personal sobre piezas compatibles con sublimaci\u00f3n."},
+    {"id": "bolsas", "name": "Ideas para llevar", "category": "Textiles", "interest": "textiles",
+     "technique": "DTF", "technique_key": "dtf", "image": "images/collection-concept.webp",
+     "description": "Composiciones pensadas para acompa\u00f1arte en textiles de uso diario."},
+    {"id": "textiles", "name": "Color en cada detalle", "category": "Textiles", "interest": "textiles",
+     "technique": "Sublimaci\u00f3n", "technique_key": "sublimacion", "image": "images/collection-concept.webp",
+     "description": "Exploramos el soporte y la gr\u00e1fica adecuados para tu proyecto."},
+    {"id": "piezas", "name": "Tu idea toma volumen", "category": "Piezas 3D", "interest": "piezas-3d",
+     "technique": "Impresi\u00f3n 3D", "technique_key": "3d", "image": "images/collection-concept.webp",
+     "description": "Forma, escala y acabado a partir de lo que necesitas crear."},
+    {"id": "conjuntos", "name": "Piezas que conectan", "category": "Regalos", "interest": "regalos",
+     "technique": "Personalizaci\u00f3n", "technique_key": "personalizacion", "image": "images/collection-concept.webp",
+     "description": "Distintos objetos reunidos bajo una misma intenci\u00f3n visual."},
+]
+
+PACKAGES = [
+    {"id": "regalo", "interest": "regalo", "name": "Un regalo con intenci\u00f3n",
+     "description": "Una pieza principal y un complemento compatible, pensados para alguien especial.",
+     "cta": "Cotiza tu regalo"},
+    {"id": "equipo", "interest": "equipo", "name": "Tu equipo, con identidad",
+     "description": "Prendas con un dise\u00f1o compartido y variantes de nombres cuando la t\u00e9cnica lo permita.",
+     "cta": "Cotiza para tu equipo"},
+    {"id": "marca", "interest": "marca", "name": "Tu marca, en cada detalle",
+     "description": "Una propuesta para varias piezas que mantengan la misma identidad visual.",
+     "cta": "Cotiza para tu marca"},
+]

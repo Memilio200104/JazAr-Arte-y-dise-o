@@ -1,0 +1,73 @@
+name: jazar
+
+x-app: &app
+  build: .
+  image: jazar-web:local
+  env_file: .env
+  init: true
+  security_opt:
+    - no-new-privileges:true
+
+services:
+  collectstatic:
+    <<: *app
+    command: python manage.py collectstatic --noinput
+    volumes:
+      - static_data:/app/staticfiles
+
+  web:
+    <<: *app
+    environment:
+      CONTACT_TRUST_PROXY: "1"
+    volumes:
+      - runtime_data:/app/runtime
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      collectstatic:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/healthz/', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  migrate:
+    <<: *app
+    command: python manage.py migrate --noinput
+    volumes:
+      - runtime_data:/app/runtime
+
+  nginx:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+      NGINX_ENVSUBST_FILTER: ^DOMAIN$$
+    ports:
+      - "${HTTP_BIND:-127.0.0.1}:${HTTP_PORT:-8080}:80"
+      - "${HTTP_BIND:-127.0.0.1}:${HTTPS_PORT:-8443}:443"
+    volumes:
+      - ${NGINX_TEMPLATE:-./deploy/nginx/http.conf.template}:/etc/nginx/templates/default.conf.template:ro
+      - ./deploy/nginx/proxy.conf:/etc/nginx/includes/proxy.conf:ro
+      - static_data:/srv/static:ro
+      - acme_data:/var/www/certbot:ro
+      - certificate_data:/etc/letsencrypt:ro
+    depends_on:
+      web:
+        condition: service_healthy
+
+  certbot:
+    image: certbot/certbot:latest
+    profiles: [tls]
+    volumes:
+      - acme_data:/var/www/certbot
+      - certificate_data:/etc/letsencrypt
+
+volumes:
+  runtime_data:
+  static_data:
+  acme_data:
+  certificate_data:

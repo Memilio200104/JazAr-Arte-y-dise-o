@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+!.env.example
+.venv
+__pycache__
+*.pyc
+staticfiles
+node_modules
+docs
+runtime
+artifacts
+scripts
+AGENTS.md
