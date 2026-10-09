@@ -39,6 +39,155 @@
   grid-template-columns: 0.85fr 1.35fr;
   gap: 96px;
   align-items: center;
+  padding-top: 48px;
+  padding-bottom: 48px;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.intro > :not(.design-backdrop) {
+  position: relative;
+  z-index: 1;
+}
+.motion-surface {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+}
+.motion-surface > .section-inner {
+  position: relative;
+  z-index: 1;
+}
+.hero > .design-backdrop {
+  z-index: 1;
+  background: none;
+}
+.hero > .design-backdrop::before {
+  right: 4%;
+  top: 15%;
+  width: 110px;
+  height: 110px;
+  border-color: #16d9f38c;
+}
+.hero > .design-backdrop::after {
+  right: 48%;
+  bottom: 14%;
+  width: 70px;
+  height: 70px;
+}
+.hero-content,
+.hero-scroll,
+.hero-edition,
+.image-note {
+  z-index: 2;
+}
+.catalog .design-backdrop {
+  background-size: 96px 96px;
+}
+.catalog .design-backdrop::before {
+  width: 380px;
+  height: 380px;
+  top: 12%;
+  right: -180px;
+}
+.catalog .design-backdrop::after {
+  bottom: 5%;
+  right: 72%;
+}
+.packages .design-backdrop {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 95px,
+    #17171706 95px 96px
+  );
+}
+.packages .design-backdrop::before {
+  right: 8%;
+  top: 10%;
+  width: 160px;
+  height: 160px;
+  border-color: #b5165833;
+}
+.packages .design-backdrop::after {
+  right: 85%;
+  border-color: #16d9f366;
+}
+.process .design-backdrop,
+.site-footer .design-backdrop {
+  background-image:
+    linear-gradient(#ffffff07 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff07 1px, transparent 1px);
+  background-size: 100px 100px;
+}
+.process .design-backdrop::before {
+  border-color: #16d9f359;
+  right: -130px;
+  top: 22%;
+  width: 420px;
+  height: 420px;
+}
+.process .design-backdrop::after {
+  border-color: #ffe06540;
+  right: 88%;
+  bottom: 15%;
+}
+.contact .design-backdrop {
+  background-size: 80px 80px;
+}
+.contact .design-backdrop::before {
+  right: 90%;
+  top: 5%;
+}
+.contact .design-backdrop::after {
+  right: 5%;
+  bottom: 3%;
+}
+.site-footer .design-backdrop::before {
+  top: 60px;
+  right: 20%;
+  border-color: #16d9f34d;
+}
+.site-footer .design-backdrop::after {
+  right: 60%;
+  border-color: #ffe06540;
+}
+@media (max-width: 767px) {
+  .design-backdrop {
+    opacity: 0.6;
+  }
+  .hero > .design-backdrop::before {
+    right: -60px;
+  }
+}
+.design-backdrop {
+  position: absolute;
+  inset: -80px -40px;
+  pointer-events: none;
+  z-index: -1;
+  background-image:
+    linear-gradient(#17171708 1px, transparent 1px),
+    linear-gradient(90deg, #17171708 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+.design-backdrop::before,
+.design-backdrop::after {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border: 2px solid #16d9f34d;
+  transform: rotate(24deg);
+  right: -100px;
+  top: 130px;
+}
+.design-backdrop::after {
+  border-color: #b5165833;
+  width: 140px;
+  height: 140px;
+  top: auto;
+  bottom: 60px;
+  right: 35%;
+  transform: rotate(-18deg);
 }
 .brand-portrait {
   margin: 0;
@@ -46,8 +195,12 @@
 }
 .brand-portrait img {
   width: 100%;
+  height: auto;
   aspect-ratio: 1;
   object-fit: contain;
+}
+.brand-portrait {
+  max-width: 340px;
 }
 .brand-portrait figcaption {
   font-size: 9px;

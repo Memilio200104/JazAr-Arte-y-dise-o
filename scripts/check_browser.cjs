@@ -18,6 +18,11 @@ let browser;
   await page.goto("http://127.0.0.1:8000/", { waitUntil: "networkidle" });
   await page.screenshot({ path: "artifacts/desktop.png" });
   assert.equal(await page.locator(".product").count(), 6);
+  assert.ok(
+    await page.locator(".intro").evaluate((el) => el.offsetHeight < 550),
+    "Intro must not inherit the source logo height",
+  );
+  assert.equal(await page.locator(".design-backdrop").count(), 7);
   for (const img of await page
     .locator(".hero-image, .product-visual img, .brand-portrait img")
     .all()) {
@@ -54,12 +59,16 @@ let browser;
   await page.locator('[data-filter="dtf"]').click();
   assert.equal(await page.locator(".product:visible").count(), 2);
   assert.match(page.url(), /tecnica=dtf/);
-  await page.locator('[data-filter="dtf"]').evaluate(button => { button.dataset.filter = "empty-test"; });
+  await page.locator('[data-filter="dtf"]').evaluate((button) => {
+    button.dataset.filter = "empty-test";
+  });
   await page.locator('[data-filter="empty-test"]').click();
-  assert.equal(await page.locator('.catalog-empty').isVisible(), true);
-  await page.locator('[data-reset-filter]').click();
-  assert.equal(await page.locator('.product:visible').count(), 6);
-  await page.locator('[data-filter="empty-test"]').evaluate(button => { button.dataset.filter = "dtf"; });
+  assert.equal(await page.locator(".catalog-empty").isVisible(), true);
+  await page.locator("[data-reset-filter]").click();
+  assert.equal(await page.locator(".product:visible").count(), 6);
+  await page.locator('[data-filter="empty-test"]').evaluate((button) => {
+    button.dataset.filter = "dtf";
+  });
   await page.locator('[data-filter="dtf"]').click();
   await page.locator(".product:visible .text-link").first().click();
   assert.equal(await page.locator("#id_interest").inputValue(), "prendas");
@@ -92,6 +101,14 @@ let browser;
   );
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.waitForFunction(() => window.ScrollTrigger.getAll().length === 0);
+  assert.equal(await page.locator(".design-backdrop").count(), 7);
+  assert.ok(
+    await page
+      .locator(".design-backdrop")
+      .evaluateAll((items) =>
+        items.every((item) => getComputedStyle(item).transform === "none"),
+      ),
+  );
   await page.screenshot({ path: "artifacts/mobile.png", fullPage: true });
   await page.locator("#id_name").fill("Demo JazAr");
   await page.locator("#id_email").fill("demo@example.com");

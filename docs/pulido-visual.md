@@ -22,6 +22,14 @@ La demo y el pulido comparten el directorio actual para que runserver siga mostr
 
 ## Verificación del 9 de octubre
 
+### Sistema de fondos y movimiento global
+
+Dirección aprobada por el usuario: aplicar el lenguaje gráfico a toda la página. Hero, presentación, catálogo, paquetes, proceso, contacto y footer tienen capas decorativas con retículas y marcos de composición; variantes diagonales en paquetes y líneas claras sobre secciones oscuras. El movimiento se vincula al scroll nativo mediante transformaciones, sin bucles automáticos ni captura de rueda. Encabezados tienen entradas adicionales y se mantienen las transiciones de filtros y etapas.
+
+Se corrigió también la altura intrínseca del logo de presentación con height:auto y se redujo el padding vertical a 48 px. La sección ya no reserva 1365 px para una imagen visualmente pequeña. Prueba de regresión exige una altura menor de 550 px en escritorio.
+
+Revisión web-design-guidelines: decoraciones aria-hidden y pointer-events:none; controles conservan sus capas; movimiento reducido revierte transforms y conserva fondos estáticos. Pruebas de navegador, hero y proceso pasan, incluidos 7 fondos, 5 anchos, formulario local, filtros, teclado, no-JS y escritorio con altura reducida. Capturas revisadas de contacto y proceso; sin cambios en el backend ni Módulo 2.
+
 - 14 pruebas Django pasan. Revisión backend independiente sin bloqueadores en modelos ni contacto.
 - Playwright con Chrome: recursos sin errores, filtros con URL, preselección, navegación de proceso 4-2-5 con capas asentadas, cinco anchos 320/390/768/1024/1440, menú y Escape, movimiento reducido, formulario local y contenido sin JavaScript.
 - Revisión estática contra https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md: corregidos navegación sticky sin JS, controles de proceso sin JS, estado vacío de filtros y contraste de selección frente a hover. Capturas locales en artifacts, fuera de Git.

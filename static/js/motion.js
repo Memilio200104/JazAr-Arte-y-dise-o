@@ -2,7 +2,50 @@
   if (!window.gsap || !window.ScrollTrigger) return;
   gsap.registerPlugin(ScrollTrigger);
   const media = gsap.matchMedia();
+  const surfaces = [
+    ...document.querySelectorAll(
+      ".hero, .intro, .catalog, .packages, .process, .contact, .site-footer",
+    ),
+  ];
+  const backdrops = surfaces.map((surface) => {
+    surface.classList.add("motion-surface");
+    const backdrop = document.createElement("div");
+    backdrop.className = "design-backdrop";
+    backdrop.setAttribute("aria-hidden", "true");
+    surface.prepend(backdrop);
+    return backdrop;
+  });
   media.add("(prefers-reduced-motion: no-preference)", () => {
+    backdrops.forEach((backdrop, index) => {
+      const direction = index % 2 ? 1 : -1;
+      gsap.fromTo(
+        backdrop,
+        { y: -24 * direction, x: -12, rotation: -0.6 },
+        {
+          y: 24 * direction,
+          x: 12,
+          rotation: 0.6,
+          ease: "none",
+          scrollTrigger: {
+            trigger: surfaces[index],
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.6,
+          },
+        },
+      );
+    });
+    document
+      .querySelectorAll(".section-heading h2, .contact-copy h2")
+      .forEach((title) => {
+        gsap.from(title, {
+          y: 20,
+          duration: 0.75,
+          ease: "power3.out",
+          scrollTrigger: { trigger: title, start: "top 88%", once: true },
+          clearProps: "transform",
+        });
+      });
     gsap.from(".hero-content > :not(h1)", {
       y: 18,
       opacity: 0,
@@ -13,7 +56,7 @@
     });
     document
       .querySelectorAll(
-        ".section-heading, .intro > div, .brand-portrait, .package",
+        ".section-heading, .intro > div:not(.design-backdrop), .brand-portrait, .package",
       )
       .forEach((section) => {
         gsap.from(section, {
@@ -66,17 +109,33 @@
         scrollTrigger: {
           id: "hero-story",
           trigger: ".hero",
-          start: () => `top top+=${document.querySelector('.site-header').offsetHeight}`,
-          end: () => `+=${Math.round(window.innerHeight * .85)}`,
+          start: () =>
+            `top top+=${document.querySelector(".site-header").offsetHeight}`,
+          end: () => `+=${Math.round(window.innerHeight * 0.85)}`,
           pin: true,
           scrub: 0.4,
           invalidateOnRefresh: true,
         },
       });
       heroStory
-        .to('.hero-image', { scale: 1.14, y: -28, transformOrigin: '75% 50%', ease: 'none', duration: 1 }, 0)
-        .to('.hero h1', { y: -22, ease: 'none', duration: 1 }, 0)
-        .fromTo('.hero-edition', { y: 0 }, { y: 120, ease: 'none', duration: 1 }, 0);
+        .to(
+          ".hero-image",
+          {
+            scale: 1.14,
+            y: -28,
+            transformOrigin: "75% 50%",
+            ease: "none",
+            duration: 1,
+          },
+          0,
+        )
+        .to(".hero h1", { y: -22, ease: "none", duration: 1 }, 0)
+        .fromTo(
+          ".hero-edition",
+          { y: 0 },
+          { y: 120, ease: "none", duration: 1 },
+          0,
+        );
     },
   );
   media.add(
