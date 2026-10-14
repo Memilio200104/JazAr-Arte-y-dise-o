@@ -40,6 +40,14 @@
   - **Web Design:** Diseñen los modelos de base de datos del catálogo (Django Models) pensando en que eventualmente serán transaccionales (consideren incluir campos como precio o SKU desde ahora, aunque no se puedan comprar aún).
 
 ## 6. Skills obligatorias del proyecto
+### Actualizacion autorizada el 13 de octubre de 2026
+- En todas las sesiones de este proyecto usar **Superpowers**, **ui-ux-pro-max** y **web-design-guidelines** segun la etapa del trabajo. Leer sus SKILL.md vigentes antes de aplicarlos.
+- **ui-ux-pro-max** (`C:/Users/emili/.codex/skills/ui-ux-pro-max/SKILL.md`) dirige diseno, tipografia, interaccion, accesibilidad y responsividad.
+- **web-design-guidelines** (`C:/Users/emili/.codex/skills/web-design-guidelines/SKILL.md`) revisa los cambios de interfaz antes de cerrarlos y registra los resultados.
+- Esta sustitucion fue autorizada por el usuario y prevalece sobre las referencias historicas siguientes a UI UX Designer y Web Design, actualmente ausentes. No afirmar que se usaron plugins que no estan disponibles.
+- Se autoriza el panel administrativo privado del Modulo 1. No equivale a login de clientes. El Modulo 2 esta autorizado como siguiente etapa, sujeto a su especificacion comercial y tecnica; no activar cobros reales por defecto.
+
+### Contexto historico
 - En cada sesión de trabajo se deben aplicar las cuatro capacidades: **Superpowers**, **UI UX Designer**, **Web Design** y **web-design-guidelines**. Leer sus `SKILL.md` vigentes antes de aplicar sus flujos.
 - Superpowers organiza diseño, planificación, ejecución y verificación según la etapa y las autorizaciones ya dadas.
 - UI UX Designer conserva el sistema visual, accesibilidad, responsividad y espacio de navegación futuro.

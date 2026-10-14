@@ -14,7 +14,7 @@ class Command(BaseCommand):
                 "sku": f"DEMO-{index + 1:03d}", "name": product["name"],
                 "description": product["description"], "category": product["interest"],
                 "technique_key": product["technique_key"], "image": product["image"],
-                "sort_order": index, "is_concept": True,
+                "sort_order": index, "is_concept": True, "is_active": True,
             })
             created += int(is_new)
         self.stdout.write(self.style.SUCCESS(f"Catálogo listo: {created} conceptos nuevos. Productos existentes conservados."))

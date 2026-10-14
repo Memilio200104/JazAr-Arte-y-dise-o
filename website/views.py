@@ -9,16 +9,18 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
 
-from .catalog import PACKAGES
 from .forms import ContactForm
-from .models import Product
+from .models import Product, Package, SiteContent
 from .throttle import allow_contact
 
 
 def page(request, form=None, contact_status="", status=200):
     return render(request, "website/home.html", {
         "form": form if form is not None else ContactForm(),
-        "products": Product.objects.filter(is_active=True), "packages": PACKAGES, "contact_status": contact_status,
+        "products": Product.objects.filter(is_active=True),
+        "packages": Package.objects.filter(is_active=True),
+        "site_content": SiteContent.objects.first() or SiteContent(),
+        "contact_status": contact_status,
         "contact_local_mode": settings.CONTACT_LOCAL_MODE,
     }, status=status)
 

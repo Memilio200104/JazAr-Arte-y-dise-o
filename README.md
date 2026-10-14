@@ -46,6 +46,8 @@ La demo no envía correos externos. El formulario valida datos, CSRF, honeypot y
 
 ## Estructura
 
+El catalogo y la portada ya se administran en `/admin/`. Consultar `docs/editar-contenido.md` para crear el administrador, cargar fotos, publicar borradores y respaldar datos. No hay usuarios o contrasenas predeterminados. Esta administracion interna no habilita acceso de compradores ni pagos.
+
 - `config/`: proyecto Django, configuración, rutas y WSGI/ASGI.
 - `website/`: aplicación, modelo `Product`, formularios, vistas, datos conceptuales y pruebas.
 - `templates/`: página de cinco secciones y base.

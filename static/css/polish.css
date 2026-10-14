@@ -1,6 +1,8 @@
 .site-header {
   background: var(--paper);
 }
+.hero { height: auto; min-height: min(850px, calc(90svh - 88px)); max-height: none; }
+.hero h2, .hero-description, .intro h2, .intro p, .contact-copy h2, .contact-copy p { overflow-wrap: anywhere; }
 .catalog-empty {
   padding: 32px 0;
 }

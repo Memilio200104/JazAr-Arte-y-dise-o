@@ -134,5 +134,5 @@ class ProductTests(TestCase):
         call_command("seed_demo", verbosity=0)
         Product.objects.update(is_active=False)
         self.assertEqual(len(self.client.get("/").context["products"]), 0)
-        for path in ("/cart/", "/login/", "/checkout/", "/stripe/", "/admin/"):
+        for path in ("/cart/", "/login/", "/checkout/", "/stripe/"):
             self.assertEqual(self.client.get(path).status_code, 404)
