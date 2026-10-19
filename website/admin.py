@@ -5,15 +5,15 @@ from .models import Product, Package, SiteContent
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'thumbnail', 'sku', 'technique_key', 'is_active', 'is_concept', 'sort_order')
-    list_filter = ('is_active', 'is_concept', 'technique_key', 'category')
+    list_display = ('name', 'thumbnail', 'sku', 'sale_mode', 'price', 'technique_key', 'is_active', 'is_concept', 'sort_order')
+    list_filter = ('sale_mode', 'is_active', 'is_concept', 'technique_key', 'category')
     search_fields = ('name', 'sku', 'description')
     prepopulated_fields = {'slug': ('name',)}
     fieldsets = (
         ('Contenido', {'fields': ('name', 'slug', 'description', 'category', 'technique_key')}),
         ('Imagen', {'fields': ('photo', 'image_alt', 'is_concept', 'image')}),
         ('Publicacion', {'fields': ('is_active', 'sort_order')}),
-        ('Datos comerciales futuros; no habilitan compras', {'fields': ('sku', 'price', 'currency', 'stock')}),
+        ('Datos comerciales; no habilitan cobros', {'fields': ('sku', 'sale_mode', 'price', 'price_note', 'currency', 'stock', 'catalog_page')}),
     )
 
     @admin.display(description='Imagen')

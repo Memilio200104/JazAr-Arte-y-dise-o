@@ -2,15 +2,15 @@
 
 ## Inicio
 
-Activar el entorno y ejecutar `python manage.py migrate`. Crear el primer administrador con `python manage.py createsuperuser`; la contrasena se introduce de forma interactiva, nunca se guarda en Git. No se ha creado un usuario automaticamente.
+Activar el entorno y ejecutar `python manage.py migrate`. En esta maquina existe `jazar_admin`, creado sin contrasena utilizable: definirla con `python manage.py changepassword jazar_admin`. En otra maquina crear su propio administrador con `python manage.py createsuperuser`. Las contrasenas se introducen de forma interactiva, nunca se guardan en Git.
 
 Abrir http://127.0.0.1:8000/admin/ con runserver activo. Para editores, crear usuarios staff y conceder solo permisos de ver, agregar y cambiar Product, Package y SiteContent. No conceder gestion de usuarios ni superusuario a un editor habitual.
 
 ## Productos y paquetes
 
-Los nuevos registros son borradores. Completar contenido, seleccionar tecnica/categoria, asignar SKU y subir foto. Agregar descripcion alternativa de la imagen; desmarcar Concepto cuando sea una fotografia real. Activar is_active para publicar. Orden menor aparece primero. Precio y stock siguen siendo informativos internos: no habilitan compras.
+Los nuevos registros son borradores. Completar contenido, seleccionar tecnica/categoria, asignar SKU y subir foto. Agregar descripcion alternativa; desmarcar Concepto para fotos reales. Activar is_active para publicar. Orden menor aparece primero. El precio se muestra publicamente; precio y stock no habilitan compras. Seleccionar Precio fijo o Cotizacion explicitamente. Las impresiones 3D personalizadas requieren cotizacion; los disenos sobre prendas negras se clasifican en DTF.
 
-Los seis conceptos existentes se conservan. `seed_demo` no reemplaza ediciones existentes. Los paquetes se cargan una sola vez mediante migracion y luego se editan en el panel. Inclusiones y textos no admiten HTML.
+Los seis conceptos anteriores se conservan ocultos. El catalogo actual se carga con `import_client_catalog`, no con `seed_demo`. Los paquetes se cargan una sola vez mediante migracion y luego se editan en el panel. Inclusiones y textos no admiten HTML.
 
 ## Portada
 
@@ -28,6 +28,6 @@ Para restaurar, detener web, conservar una copia del estado actual, restaurar la
 
 ## Estado de verificacion
 
-24 pruebas Django pasan, sin migraciones pendientes. Navegador: suite general, hero y textos largos en cinco anchos. Revision independiente encontro transparencia PNG indexada y CTA oculto por texto largo; ambos corregidos y cubiertos por regresiones. UI UX Pro Max aplicado a overflow y legibilidad; Web Design Guidelines revisado para labels, dimensiones de imagen, alt y focus del admin nativo. Esto no constituye una certificacion de accesibilidad.
+El estado actualizado de pruebas se registra en `docs/modulo-1-estado.md`. UI UX Pro Max aplicado a overflow y legibilidad; Web Design Guidelines revisado para labels, dimensiones de imagen, alt y foco. Esto no constituye una certificacion de accesibilidad.
 
-Compose valida su configuracion, pero Docker Desktop no esta ejecutando el daemon: build, Nginx y persistencia tras recrear contenedores siguen pendientes. No se probaron SMTP Gmail, dominio ni HTTPS reales. Antes de exponer /admin/ exigir HTTPS y limitar intentos de acceso en la infraestructura; no publicar el panel con DEBUG activo.
+El usuario reporta la operacion probada y se encarga del despliegue despues de ambos modulos. El agente no verifico Docker, SMTP Gmail, dominio o HTTPS reales. Gmail se configura al final del Modulo 2. Antes de exponer /admin/ exigir HTTPS y limitar intentos de acceso en la infraestructura; no publicar el panel con DEBUG activo.

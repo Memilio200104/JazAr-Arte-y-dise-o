@@ -477,11 +477,18 @@ button {
     flex-basis: 88px;
   }
 }
-@media (min-width: 1024px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+@media (min-width: 768px) and (min-height: 600px) and (prefers-reduced-motion: no-preference) {
+  .process-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px;
+  }
   .process-scene {
+    display: block;
     position: sticky;
     top: 100px;
+    min-width: 0;
   }
+  .scene-mobile-image { display: none; }
   .process-image-wrap {
     width: min(100%, calc(100svh - 300px));
     max-height: none;
@@ -491,7 +498,12 @@ button {
     min-height: 70svh;
   }
 }
-@media (max-width: 1023px), (max-height: 599px) {
+@media (min-width: 768px) and (max-width: 1023px) {
+  .process-steps h3 { font-size: 30px; overflow-wrap: anywhere; }
+  .process-steps li { padding-block: 32px; }
+  .process-selector { gap: 4px; }
+}
+@media (max-width: 767px), (max-height: 599px) {
   .process-layout {
     grid-template-columns: 1fr;
   }
@@ -501,15 +513,24 @@ button {
   .scene-mobile-image {
     display: block;
     width: 100%;
-    max-width: 480px;
-    aspect-ratio: 1;
-    object-fit: cover;
+    max-width: 360px;
+    height: min(320px, 42svh);
+    aspect-ratio: auto;
+    object-fit: contain;
+    object-position: left center;
     margin-bottom: 24px;
   }
   .process-steps li {
     min-height: 0;
   }
 }
+.contact-socials { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-top: 24px; }
+.contact-socials .social-link { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; margin: 0; }
+.contact-socials img { flex: 0 0 24px; }
+.product-pricing { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin: 16px 0; }
+.product-pricing strong { font-size: 20px; font-variant-numeric: tabular-nums; }
+.product-pricing span { font-size: 13px; }
+.product[data-sale-mode="fixed"] .product-visual img { object-fit: contain; background: #fff; }
 @media (prefers-reduced-motion: reduce) {
   .process-layout {
     grid-template-columns: 1fr;
@@ -521,8 +542,10 @@ button {
     display: block;
     width: 100%;
     max-width: 350px;
-    aspect-ratio: 1;
-    object-fit: cover;
+    height: min(320px, 42svh);
+    aspect-ratio: auto;
+    object-fit: contain;
+    object-position: left center;
     margin-bottom: 24px;
   }
   .product-visual:hover .product-arrow,

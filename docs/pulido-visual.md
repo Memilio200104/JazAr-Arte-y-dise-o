@@ -1,5 +1,7 @@
 # Pulido visual del Módulo 1
 
+> Registro historico. El catalogo y proceso ya usan fotografias reales y existen nuevas reglas responsivas. Ver docs/catalogo-cliente-2026.md y docs/modulo-1-estado.md para el estado vigente.
+
 9 de octubre de 2026. Trabajo autorizado tras revisar la demo. Referencia estable: master, commit 2689de8. Rama de iteración: codex/pulido-visual. El repositorio ahora es propio de JazAr; el Git del directorio personal no se modifica.
 
 ## Dirección

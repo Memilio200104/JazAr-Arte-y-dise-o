@@ -1,0 +1,21 @@
+{% load static %}<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#171717">
+  <title>{{ status }} · {{ title }} · JazAr</title>
+  <link rel="icon" href="{% static 'icons/favicon.ico' %}" sizes="any">
+  <link rel="stylesheet" href="{% static 'css/errors.css' %}">
+</head>
+<body>
+  <a class="skip" href="#error-content">Saltar al contenido</a>
+  <header><a class="brand" href="/"><img src="{% static 'icons/favicon-192.png' %}" width="48" height="48" alt=""><span>JazAr <small>Arte y Diseño</small></span></a><span class="edition">ESTUDIO DE IDEAS</span></header>
+  <main id="error-content">
+    <div class="artwork" aria-hidden="true"><img src="{% static 'images/client/materiales.webp' %}" width="1200" height="1600" alt=""><span class="frame"></span><span class="code">{{ status }}</span><span class="art-label">COLOR / MATERIA / IMAGINACIÓN</span></div>
+    <div class="copy"><p class="eyebrow">FUERA DE LA COMPOSICIÓN · {{ status }}</p><h1>{{ title }}</h1><p>{{ message }}</p><div class="actions"><a class="primary" href="/">Volver al inicio <span aria-hidden="true">↗</span></a><a href="https://wa.me/525539754777" target="_blank" rel="noopener noreferrer">Hablar con JazAr <span aria-hidden="true">↗</span></a></div></div>
+  </main>
+  <footer>Una pausa en el proceso. Las ideas continúan.</footer>
+</body>
+</html>

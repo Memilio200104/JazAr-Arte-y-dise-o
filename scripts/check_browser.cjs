@@ -17,7 +17,10 @@ let browser;
   });
   await page.goto("http://127.0.0.1:8000/", { waitUntil: "networkidle" });
   await page.screenshot({ path: "artifacts/desktop.png" });
-  assert.equal(await page.locator(".product").count(), 6);
+  const totalProducts = await page.locator('.product').count();
+  assert.ok(totalProducts > 0, 'Published catalog must not be empty');
+  const sublimationProducts = await page.locator('.product[data-technique="sublimacion"]').count();
+  assert.ok(sublimationProducts > 0, 'Fixture must contain sublimation products');
   assert.ok(
     await page.locator(".intro").evaluate((el) => el.offsetHeight < 550),
     "Intro must not inherit the source logo height",
@@ -56,22 +59,23 @@ let browser;
     );
   }
   await page.screenshot({ path: "artifacts/process.png" });
-  await page.locator('[data-filter="dtf"]').click();
-  assert.equal(await page.locator(".product:visible").count(), 2);
-  assert.match(page.url(), /tecnica=dtf/);
-  await page.locator('[data-filter="dtf"]').evaluate((button) => {
+  await page.locator('[data-filter="sublimacion"]').click();
+  assert.equal(await page.locator(".product:visible").count(), sublimationProducts);
+  assert.match(page.url(), /tecnica=sublimacion/);
+  await page.locator('[data-filter="sublimacion"]').evaluate((button) => {
     button.dataset.filter = "empty-test";
   });
   await page.locator('[data-filter="empty-test"]').click();
   assert.equal(await page.locator(".catalog-empty").isVisible(), true);
   await page.locator("[data-reset-filter]").click();
-  assert.equal(await page.locator(".product:visible").count(), 6);
+  assert.equal(await page.locator(".product:visible").count(), totalProducts);
   await page.locator('[data-filter="empty-test"]').evaluate((button) => {
-    button.dataset.filter = "dtf";
+    button.dataset.filter = "sublimacion";
   });
-  await page.locator('[data-filter="dtf"]').click();
+  await page.locator('[data-filter="sublimacion"]').click();
+  const expectedInterest = await page.locator('.product:visible .text-link').first().getAttribute('data-interest');
   await page.locator(".product:visible .text-link").first().click();
-  assert.equal(await page.locator("#id_interest").inputValue(), "prendas");
+  assert.equal(await page.locator("#id_interest").inputValue(), expectedInterest);
   await page.locator('[data-filter="all"]').click();
   await page.locator("#contacto").scrollIntoViewIfNeeded();
   await page.screenshot({ path: "artifacts/contact.png" });

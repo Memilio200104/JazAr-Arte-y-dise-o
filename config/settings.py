@@ -13,6 +13,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin for origin in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if origin
 ]
 ROOT_URLCONF = "config.urls"
+CSRF_FAILURE_VIEW = 'website.errors.csrf_failure'
 WSGI_APPLICATION = "config.wsgi.application"
 INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",

@@ -139,7 +139,7 @@
     },
   );
   media.add(
-    "(min-width:1024px) and (min-height:600px) and (prefers-reduced-motion:no-preference)",
+    "(min-width:768px) and (min-height:600px) and (prefers-reduced-motion:no-preference)",
     () => {
       gsap.fromTo(
         ".brand-portrait img",

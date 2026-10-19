@@ -36,6 +36,9 @@ class Product(models.Model):
                                 validators=[MinValueValidator(Decimal("0.00"))])
     currency = models.CharField(max_length=3, default="MXN", choices=[("MXN", "Peso mexicano")])
     stock = models.PositiveIntegerField(null=True, blank=True)
+    sale_mode = models.CharField(max_length=8, choices=[('quote', 'Cotización'), ('fixed', 'Precio fijo')], default='quote')
+    price_note = models.CharField(max_length=250, blank=True)
+    catalog_page = models.PositiveSmallIntegerField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
     is_concept = models.BooleanField(default=True)
     sort_order = models.PositiveIntegerField(default=0)
@@ -55,6 +58,10 @@ class Product(models.Model):
         super().clean()
         if self.is_active and self.photo and not self.image_alt.strip():
             raise ValidationError({'image_alt': 'Describe la foto antes de publicar.'})
+        if self.sale_mode == 'fixed' and self.price is None:
+            raise ValidationError({'price': 'Indica el precio fijo antes de guardar.'})
+        if self.sale_mode == 'fixed' and self.technique_key == '3d':
+            raise ValidationError({'sale_mode': 'Las impresiones 3D personalizadas requieren cotización.'})
 
     def save(self, *args, **kwargs):
         self.clean()

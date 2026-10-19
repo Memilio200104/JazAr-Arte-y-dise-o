@@ -1,5 +1,7 @@
 # JazAr: infraestructura de la primera fase
 
+> ARCHIVO HISTORICO. Las descripciones de funcionalidades ausentes corresponden al inicio del proyecto, no al estado actual. Consultar README.md y docs/modulo-1-estado.md. El usuario se encarga del despliegue despues de ambos modulos; Gmail queda para el final del Modulo 2. No ejecutar seed_demo para cargar el catalogo actual: usar import_client_catalog.
+
 Nota de continuidad: este documento registra la base de la primera fase. El proyecto y la app ya evolucionaron a una demo funcional con catálogo en SQLite; consultar `README.md` y `docs/modulo-1-estado.md` para el arranque y estado actuales. Compose ahora incluye migraciones y un volumen runtime persistente.
 
 ## Alcance
