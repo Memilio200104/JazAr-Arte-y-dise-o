@@ -1,6 +1,6 @@
 # JazAr Arte y Diseño
 
-Sitio Django de presentacion, catalogo editable y solicitudes de contacto. Estado actualizado: 19 de octubre de 2026. El catalogo contiene 85 fichas con fotografias del cliente: 79 de precio fijo y 6 por cotizacion. El hero conserva una visualizacion conceptual identificada.
+Sitio Django de presentacion, catalogo editable y frontend de tienda. Estado actualizado: 20 de octubre de 2026. El catalogo contiene 85 fichas con fotografias del cliente: 79 de precio fijo y 6 por cotizacion. El hero conserva el fondo original por peticion expresa del usuario.
 
 ## Arranque local
 
@@ -41,7 +41,9 @@ La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se 
 - Despliegue a cargo del usuario, una vez terminados ambos modulos.
 - Gmail real se configura al final del Modulo 2. Mantener `CONTACT_LOCAL_MODE=1` durante estas pruebas: el formulario no envia correos reales y lo informa.
 - Operacion reportada como probada por el usuario; no equivale a una validacion adicional del servidor realizada por Codex.
-- No hay carrito, checkout, cuentas de compradores, Stripe ni webhooks. Los productos fijos permiten consultar disponibilidad hasta conectar la tienda.
+- Los productos fijos abren una ficha propia y se pueden agregar a una seleccion local en `/carrito/`. No reserva stock ni genera pedidos.
+- Existen pantallas de cuenta, solicitud y pago sin backend transaccional. No hay autenticacion de compradores, Stripe ni webhooks; las acciones definitivas permanecen deshabilitadas.
+- `/tienda/revision/` permite revisar todas las pantallas y ejemplos de estados solo con DEBUG=True; devuelve 404 en produccion.
 - Precios visibles no activan compras. Impresion 3D y excepciones marcadas en el PDF se cotizan.
 - Disenos sobre prendas negras: DTF. Los modelos multicolor indican la regla segun el color elegido.
 - Modulo 2 pendiente de especificacion de variantes, pedidos, envio y pagos en pruebas. No activar cobros reales por defecto.
@@ -69,7 +71,7 @@ python manage.py makemigrations --check --dry-run
 docker compose config --quiet
 ```
 
-32 pruebas Django al cierre de esta entrega. Scripts Playwright en `scripts/check_*.cjs` requieren Node, Playwright y Chrome; las utilidades de imagen requieren sharp o Pillow segun el script. No son dependencias de ejecucion del sitio.
+40 pruebas Django y pruebas puras del carrito (`node scripts/test_cart_state.cjs`). Scripts Playwright en `scripts/check_*.cjs` requieren Node, Playwright y Chrome; las utilidades de imagen requieren sharp o Pillow segun el script. No son dependencias de ejecucion del sitio. `check_store.cjs` comprueba la tienda en siete anchos, almacenamiento y navegacion.
 
 El motor Docker no estaba disponible para la ultima comprobacion del agente. El despliegue real, TLS y SMTP no se afirman verificados por estas pruebas locales. `check --deploy` muestra advertencias esperadas con el entorno de desarrollo.
 

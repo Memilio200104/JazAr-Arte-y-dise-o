@@ -1,5 +1,5 @@
 <article class="product" data-technique="{{ product.technique_key }}" data-sale-mode="{{ product.sale_mode }}">
-  <a href="#contacto" class="product-visual" data-interest="{{ product.interest }}" aria-label="Consultar: {{ product.name }}">
+  <a href="{% if product.has_store_detail %}{% url 'product_detail' product.slug %}{% else %}#contacto{% endif %}" class="product-visual" {% if not product.has_store_detail %}data-interest="{{ product.interest }}"{% endif %} aria-label="Ver: {{ product.name }}">
     <img src="{{ product.image_url }}" alt="{{ product.image_alt|default:product.name }}" width="1000" height="1000" loading="lazy">
     <span class="product-category">{{ product.get_category_display }}{% if product.is_concept %} · Concepto{% endif %}</span>
     <span class="product-arrow" aria-hidden="true"><i data-lucide="arrow-up-right"></i></span>
@@ -10,5 +10,5 @@
     {% if product.price != None %}<strong>${{ product.price|floatformat:2 }} {{ product.currency }}</strong>{% endif %}
     <span>{% if product.sale_mode == 'fixed' %}Precio de catálogo{% else %}Cotización personalizada{% endif %}</span>
   </div>
-  <a class="text-link" href="#contacto" data-interest="{{ product.interest }}">{% if product.sale_mode == 'fixed' %}Consultar disponibilidad{% else %}Cotizar esta pieza{% endif %} <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+  <a class="text-link" href="{% if product.has_store_detail %}{% url 'product_detail' product.slug %}{% else %}#contacto{% endif %}" {% if not product.has_store_detail %}data-interest="{{ product.interest }}"{% endif %}>{% if product.has_store_detail %}Ver esta pieza{% else %}Cotizar esta pieza{% endif %} <i data-lucide="arrow-right" aria-hidden="true"></i></a>
 </article>

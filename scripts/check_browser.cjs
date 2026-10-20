@@ -72,9 +72,10 @@ let browser;
   await page.locator('[data-filter="empty-test"]').evaluate((button) => {
     button.dataset.filter = "sublimacion";
   });
-  await page.locator('[data-filter="sublimacion"]').click();
-  const expectedInterest = await page.locator('.product:visible .text-link').first().getAttribute('data-interest');
-  await page.locator(".product:visible .text-link").first().click();
+  await page.locator('[data-filter="all"]').click();
+  const quoteLink = page.locator('.product[data-sale-mode="quote"] .text-link').first();
+  const expectedInterest = await quoteLink.getAttribute('data-interest');
+  await quoteLink.click();
   assert.equal(await page.locator("#id_interest").inputValue(), expectedInterest);
   await page.locator('[data-filter="all"]').click();
   await page.locator("#contacto").scrollIntoViewIfNeeded();
@@ -127,7 +128,7 @@ let browser;
   ]);
   assert.match(
     await page.locator(".form-status").innerText(),
-    /Prueba recibida/,
+    /Continúa por WhatsApp/,
   );
   const noJS = await browser.newPage({
     javaScriptEnabled: false,

@@ -29,4 +29,4 @@ No copiar direccion, origen postal, embalajes de consolas ni estimaciones de pes
 - Variantes que comparten existencias, reserva de stock, momento de liberacion y entrega estimada.
 - Verificacion y recuperacion de cuenta durante pruebas sin Gmail real.
 
-No crear rutas transaccionales hasta revisar la especificacion y el plan del Modulo 2. La cuenta administrativa local no equivale a una cuenta de comprador.
+Frontend aprobado e implementado por separado: paginas GET de lectura y seleccion local, sin rutas transaccionales. Especificacion y plan en docs/superpowers. El backend sigue pendiente de su especificacion. La cuenta administrativa local no equivale a una cuenta de comprador.

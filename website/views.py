@@ -12,10 +12,12 @@ from django.views.decorators.http import require_GET, require_POST
 from .forms import ContactForm
 from .models import Product, Package, SiteContent
 from .throttle import allow_contact
+from .store_presenters import store_context
 
 
 def page(request, form=None, contact_status="", status=200):
     return render(request, "website/home.html", {
+        **store_context(),
         "form": form if form is not None else ContactForm(),
         "products": Product.objects.filter(is_active=True),
         "packages": Package.objects.filter(is_active=True),

@@ -1,7 +1,7 @@
 # JazAr: frontend del e-commerce
 
 Fecha: 19 de octubre de 2026.
-Estado: alcance conversacional aprobado; especificacion pendiente de revision del usuario.
+Estado: especificacion aprobada por el usuario; plan de implementacion pendiente de revision y eleccion de ejecucion.
 
 ## Objetivo y limites
 
@@ -58,7 +58,7 @@ La navegacion incorpora accesos reconocibles a carrito y cuenta, contador de sel
 ## Retirar la presentacion como demo
 
 - Retirar etiquetas publicas de demo y referencias comerciales obsoletas.
-- Sustituir la imagen conceptual de portada por una fotografia real adecuada del material del cliente, con texto alternativo correspondiente. No ocultar su origen manteniendo una imagen conceptual como si fuera producto real.
+- Actualizacion expresa del usuario durante implementacion: conservar el fondo original hero-concept.webp en portada; no sustituirlo por la fotografia del taller. Mantener alt descriptivo de composicion conceptual sin etiqueta publica de demo.
 - Mientras Gmail no este conectado, explicar de forma breve que el correo no esta disponible y ofrecer WhatsApp; no afirmar que un mensaje llego a Jazmin.
 - Mantener documentacion tecnica veraz sobre funcionalidades pendientes.
 - Conservar migraciones historicas, comandos de compatibilidad y referencias tecnicas necesarias como `--hide-demo`; renombrarlos indiscriminadamente podria romper instalaciones. No reescribir historial Git.

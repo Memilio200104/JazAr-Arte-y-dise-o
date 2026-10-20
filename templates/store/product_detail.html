@@ -1,0 +1,22 @@
+{% extends "store/base.html" %}
+{% block store_content %}
+<section class="store-product">
+  <div class="store-photo">
+    <button class="photo-open" data-open-photo aria-label="Ampliar fotografía de {{ product.name }}"><img src="{{ product.image_url }}" alt="{{ product.image_alt|default:product.name }}" width="1000" height="1000" fetchpriority="high"><span class="photo-zoom"><i data-lucide="maximize-2" aria-hidden="true"></i></span></button>
+    <p>{{ product.technique }} <span>Hecho para llevar tu idea</span></p>
+  </div>
+  <div class="store-product-copy">
+    <p class="eyebrow">{{ product.get_category_display }} / JAZAR</p>
+    <h1>{{ product.name }}</h1>
+    <p class="store-price">${{ product.price|floatformat:2 }} <small>{{ product.currency }}</small></p>
+    <p class="store-description">{{ product.description }}</p>
+    {% if product.price_note and product.price_note != product.description %}<p class="store-note">{{ product.price_note }}</p>{% endif %}
+    <div class="store-buy"><label for="product-quantity">Cantidad</label><input id="product-quantity" type="number" min="1" max="99" step="1" value="1" inputmode="numeric">
+    <button class="button button-primary" data-add-product="{{ product.pk }}" {% if product.stock == 0 %}disabled{% endif %}><span>{% if product.stock == 0 %}Sin existencias{% else %}Agregar a mi selección{% endif %}</span><i data-lucide="plus" aria-hidden="true"></i></button></div>
+    <p class="store-note">Agregar una pieza no reserva existencias ni genera un pedido.</p>
+    <div class="store-facts"><div><span>01</span><p><strong>Tu diseño, tu sello.</strong>Comparte tu archivo PDF o PNG por WhatsApp.</p></div><div><span>02</span><p><strong>Primero, la aprobación.</strong>Jazmin revisa el diseño antes de cualquier pago.</p></div><div><span>03</span><p><strong>Hasta tu puerta.</strong>El envío se calculará antes de pagar.</p></div></div>
+    <a class="text-link" href="https://wa.me/525539754777">Pregúntale a Jazmin <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+  </div>
+</section>
+<dialog class="photo-dialog"><button class="icon-button" data-close-photo aria-label="Cerrar fotografía" title="Cerrar"><i data-lucide="x" aria-hidden="true"></i></button><img src="{{ product.image_url }}" alt="{{ product.image_alt|default:product.name }}" width="1000" height="1000"></dialog>
+{% endblock %}

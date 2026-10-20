@@ -69,6 +69,10 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     @property
+    def has_store_detail(self):
+        return self.is_active and not self.is_concept and self.sale_mode == "fixed" and self.price is not None
+
+    @property
     def image_url(self):
         return self.photo.url if self.photo else static(self.display_image)
 
