@@ -1,6 +1,6 @@
 # Cuentas de comprador y direcciones
 
-20 de octubre de 2026. Flujo comercial aprobado en conversacion; esta especificacion tecnica queda pendiente de revision del usuario antes del plan de implementacion.
+20 de octubre de 2026. Especificacion aprobada por el usuario; plan de implementacion creado y pendiente de revision.
 
 ## Objetivo
 
