@@ -1,5 +1,7 @@
 # JazAr Arte y Diseño: primera fase
 
+> Propuesta historica del 8 de octubre. No describe el estado actual. Consultar README.md y docs/modulo-1-estado.md; catalogo real, administracion y paginas de error ya implementados. Las referencias a plugins antiguos son historicas.
+
 Fecha: 8 de octubre de 2026. Estado: propuesta para revisión y base técnica; el sitio público todavía no está implementado.
 
 ## Objetivo y alcance

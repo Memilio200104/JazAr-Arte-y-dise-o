@@ -53,6 +53,7 @@ services:
       - ${NGINX_TEMPLATE:-./deploy/nginx/http.conf.template}:/etc/nginx/templates/default.conf.template:ro
       - ./deploy/nginx/proxy.conf:/etc/nginx/includes/proxy.conf:ro
       - static_data:/srv/static:ro
+      - runtime_data:/srv/runtime:ro
       - acme_data:/var/www/certbot:ro
       - certificate_data:/etc/letsencrypt:ro
     depends_on:

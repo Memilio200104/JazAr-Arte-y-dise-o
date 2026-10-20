@@ -1,5 +1,7 @@
 # JazAr: infraestructura de la primera fase
 
+> ARCHIVO HISTORICO. Las descripciones de funcionalidades ausentes corresponden al inicio del proyecto, no al estado actual. Consultar README.md y docs/modulo-1-estado.md. El usuario se encarga del despliegue despues de ambos modulos; Gmail queda para el final del Modulo 2. No ejecutar seed_demo para cargar el catalogo actual: usar import_client_catalog.
+
 Nota de continuidad: este documento registra la base de la primera fase. El proyecto y la app ya evolucionaron a una demo funcional con catálogo en SQLite; consultar `README.md` y `docs/modulo-1-estado.md` para el arranque y estado actuales. Compose ahora incluye migraciones y un volumen runtime persistente.
 
 ## Alcance
@@ -35,10 +37,12 @@ No se afirma que esta entrega sea una imagen de produccion reproducible ya audit
 Con Docker Desktop iniciado en modo contenedores Linux:
 
 ```powershell
-Copy-Item .env.example .env
-# Editar DJANGO_SECRET_KEY con un secreto generado aleatoriamente.
+python scripts/setup_local.py
+# Conserva el .env existente; revisar variables antes de usarlo en produccion.
 docker compose config --quiet
 docker compose up --build -d
+# Solo para una demo: cargar conceptos en la base del contenedor.
+docker compose exec web python manage.py seed_demo
 docker compose exec nginx nginx -t
 Invoke-RestMethod http://localhost:8080/healthz/
 docker compose logs --tail=50 web nginx

@@ -1,0 +1,7 @@
+{% load static %}
+<header class="site-header">
+  <a href="{% url 'home' %}" class="wordmark" aria-label="JazAr, inicio"><img class="brand-logo" src="{% static 'images/brand/jazar-original.png' %}" alt="" width="1365" height="1365"><span class="brand-type">JazAr<small>ARTE Y DISEÑO</small></span></a>
+  <nav id="site-nav" aria-label="Navegación principal"><a href="{% url 'home' %}#catalogo">Las posibilidades</a><a href="{% url 'home' %}#paquetes">Paquetes</a><a href="{% url 'home' %}#proceso">El proceso</a><a class="nav-cta" href="{% url 'home' %}#contacto">Hablemos de tu idea <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></nav>
+  <div class="store-nav"><a href="{% url 'account' %}" class="icon-button" aria-label="Mi cuenta" title="Mi cuenta"><i data-lucide="user-round" aria-hidden="true"></i></a><a href="{% url 'cart' %}" class="icon-button" aria-label="Carrito" title="Carrito"><i data-lucide="shopping-bag" aria-hidden="true"></i><span data-cart-count hidden></span></a></div>
+  <button class="menu-toggle icon-button" aria-expanded="false" aria-controls="site-nav" aria-label="Abrir menú" title="Abrir menú"><i data-lucide="menu" aria-hidden="true"></i></button>
+</header>

@@ -96,6 +96,15 @@ class ContactTests(TestCase):
 
 
 class ProductTests(TestCase):
+    def test_concept_images_do_not_override_real_or_custom_assets(self):
+        product = Product(slug="playeras", image="images/collection-concept.webp", is_concept=True)
+        self.assertEqual(product.display_image, "images/shirt-concept.webp")
+        product.is_concept = False
+        self.assertEqual(product.display_image, product.image)
+        product.is_concept = True
+        product.image = "images/custom.webp"
+        self.assertEqual(product.display_image, "images/custom.webp")
+
     def test_demo_seed_preserves_edits_and_unknown_commercial_values(self):
         call_command("seed_demo", verbosity=0)
         product = Product.objects.first()
@@ -125,5 +134,5 @@ class ProductTests(TestCase):
         call_command("seed_demo", verbosity=0)
         Product.objects.update(is_active=False)
         self.assertEqual(len(self.client.get("/").context["products"]), 0)
-        for path in ("/cart/", "/login/", "/checkout/", "/stripe/", "/admin/"):
+        for path in ("/cart/", "/login/", "/checkout/", "/stripe/"):
             self.assertEqual(self.client.get(path).status_code, 404)

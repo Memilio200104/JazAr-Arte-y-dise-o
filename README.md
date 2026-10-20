@@ -1,75 +1,86 @@
 # JazAr Arte y Diseño
 
-Demo del Módulo 1: Django sirve presentación, catálogo y solicitudes de cotización. La identidad parte de la captura de Facebook aportada por el usuario. Las imágenes actuales son visualizaciones conceptuales, no fotografías de trabajos reales.
+Sitio Django de presentacion, catalogo editable y frontend de tienda. Estado actualizado: 20 de octubre de 2026. El catalogo contiene 85 fichas con fotografias del cliente: 79 de precio fijo y 6 por cotizacion. El hero conserva el fondo original por peticion expresa del usuario.
 
-## Arranque local en PowerShell
-
-El entorno `.venv`, el `.env` local y la base SQLite ya están preparados en esta máquina. Desde la raíz del proyecto:
+## Arranque local
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 python manage.py runserver
 ```
 
-Abrir [la demo local](http://127.0.0.1:8000/). Django recarga Python y templates al guardar; recargar el navegador para CSS/JS. Si PowerShell bloquea la activación, no es necesario cambiar su política: ejecutar directamente `.\.venv\Scripts\python.exe manage.py runserver`.
+Abrir http://127.0.0.1:8000/. Si el puerto esta ocupado, usar `python manage.py runserver 8001`. Para ejecutar sin activar el entorno: `.\.venv\Scripts\python.exe manage.py runserver`.
 
-La demo puede estar ya ejecutándose en el puerto 8000. Para una segunda instancia usar `python manage.py runserver 8001` y abrir `http://127.0.0.1:8001/`. El origen de mismo host funciona con CSRF; no requiere modificar credenciales.
-
-## Preparar otra máquina
+## Preparar otra maquina
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
 .\.venv\Scripts\python.exe scripts/setup_local.py
 .\.venv\Scripts\python.exe manage.py migrate
-.\.venv\Scripts\python.exe manage.py seed_demo
+.\.venv\Scripts\python.exe manage.py import_client_catalog --update-site --hide-demo
+.\.venv\Scripts\python.exe manage.py createsuperuser
 .\.venv\Scripts\python.exe manage.py runserver
 ```
 
-`setup_local.py` crea una clave aleatoria y el directorio de datos; no reemplaza un `.env` existente. `seed_demo` crea seis conceptos, sin modificar registros existentes ni inventar precio o inventario. Las fuentes, imágenes y dependencias JS se sirven localmente: no se necesita Node ni un CDN para mostrar la demo.
+El importador conserva ediciones de productos existentes. `--update-site` reemplaza explicitamente textos y retrato de portada. Consultar [catalogo del cliente](docs/catalogo-cliente-2026.md). No usar `seed_demo` para cargar el catalogo actual; solo sirve para pruebas de conceptos.
 
-## Configuración
+## Administracion
 
-`config/settings.py` carga `.env` automáticamente con python-dotenv. Las variables ya presentes en el entorno prevalecen sobre el archivo.
+El panel privado esta en `/admin/`. En esta maquina se creo `jazar_admin` sin contrasena utilizable; el propietario debe definirla en su terminal:
 
-| Variable | Demo local | Producción |
-| --- | --- | --- |
-| `DJANGO_SECRET_KEY` | Aleatoria, ya generada | Secreto propio del servidor |
-| `DJANGO_DEBUG` | `1` | `0` |
-| `DJANGO_ALLOWED_HOSTS` | localhost, 127.0.0.1, IPv6 local | Dominio real |
-| `DJANGO_HTTPS` | `0` | `1` después de emitir TLS |
-| `CONTACT_LOCAL_MODE` | `1`: correo en consola, aviso de demo visible | `0`: SMTP Gmail |
-| `CONTACT_TRUST_PROXY` | `0` con runserver | `1` solo detrás del Nginx configurado |
-| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `CONTACT_EMAIL` | Vacías; no se requieren para demo | Cuenta Gmail, contraseña de aplicación y destino reales |
+```powershell
+python manage.py changepassword jazar_admin
+```
 
-La demo no envía correos externos. El formulario valida datos, CSRF, honeypot y límite de solicitudes compartido entre procesos. Fallos SMTP conservan los valores y nunca se presentan como éxito. Antes de publicar se requiere configurar Gmail, probar recepción y confirmar aviso de privacidad y contenido comercial. `.env`, SQLite y logs se excluyen de Git y de la imagen Docker.
+La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se crea una cuenta propia. Ver [edicion de contenido](docs/editar-contenido.md).
 
-## Estructura
+## Alcance acordado
 
-- `config/`: proyecto Django, configuración, rutas y WSGI/ASGI.
-- `website/`: aplicación, modelo `Product`, formularios, vistas, datos conceptuales y pruebas.
-- `templates/`: página de cinco secciones y base.
-- `static/`: estilos, GSAP/ScrollTrigger, iconos Lucide, fuentes y conceptos visuales.
-- `runtime/`: SQLite, limitación de solicitudes y logs locales, fuera de control de versiones.
-- `deploy/`: Nginx, HTTPS y renovación Certbot. Consultar `docs/fase-1-infraestructura.md`.
+- Contenido comercial aprobado por el usuario.
+- Despliegue a cargo del usuario, una vez terminados ambos modulos.
+- Gmail real se configura al final del Modulo 2. Mantener `CONTACT_LOCAL_MODE=1` durante estas pruebas: el formulario no envia correos reales y lo informa.
+- Operacion reportada como probada por el usuario; no equivale a una validacion adicional del servidor realizada por Codex.
+- Los productos fijos abren una ficha propia y se pueden agregar a una seleccion local en `/carrito/`. No reserva stock ni genera pedidos.
+- Existen pantallas de cuenta, solicitud y pago sin backend transaccional. No hay autenticacion de compradores, Stripe ni webhooks; las acciones definitivas permanecen deshabilitadas.
+- `/tienda/revision/` permite revisar todas las pantallas y ejemplos de estados solo con DEBUG=True; devuelve 404 en produccion.
+- Precios visibles no activan compras. Impresion 3D y excepciones marcadas en el PDF se cotizan.
+- Disenos sobre prendas negras: DTF. Los modelos multicolor indican la regla segun el color elegido.
+- Modulo 2 pendiente de especificacion de variantes, pedidos, envio y pagos en pruebas. No activar cobros reales por defecto.
 
-## Alcance y Módulo 2
+## Configuracion y persistencia
 
-`Product` tiene SKU único, precio decimal nullable, moneda MXN, stock nullable, slug, categoría, técnica, imagen, publicación y fechas. `null` significa que el dato comercial aún no está definido; no equivale a precio cero ni existencia cero. Los campos se validan, pero no se realizan compras ni movimientos de inventario.
+`config/settings.py` carga `.env`; las variables del entorno prevalecen. `.env.example` documenta las opciones, sin secretos reales. `setup_local.py` genera una clave aleatoria y no reemplaza un archivo existente.
 
-La navegación reserva dos espacios de 44 px para futuros accesos. Están vacíos y fuera del árbol accesible: no hay botones ficticios, rutas de carrito, login de clientes, checkout, Stripe ni webhooks. Las aplicaciones de autenticación que trae Django permanecen como infraestructura estándar, sin rutas expuestas ni flujos de acceso. SQLite permite revisar este módulo; antes del módulo transaccional se deberá planificar PostgreSQL y el diseño de variantes/pedidos/pagos por separado.
+`runtime/db.sqlite3`, `runtime/media`, cache y logs son locales y estan excluidos de Git y de la imagen Docker. Respaldar base y medios juntos. En contenedores viven en `runtime_data`; las fotos de catalogo y bundles estan en `static/`.
 
-## Verificación
+Gmail usa SMTP nativo de Django, sin automatizadores externos. WhatsApp y Facebook funcionan independientemente del correo.
+
+## Errores e identidad
+
+Paginas artisticas personalizadas para 400, 403, 404 y 500, incluida la denegacion CSRF. La pagina 500 no depende de consultas de base de datos ni muestra excepciones. Django muestra su pagina tecnica 404/500 cuando `DEBUG=1`; probar los handlers con `DEBUG=False` en tests, sin cambiar el entorno habitual.
+
+Favicon ICO, PNG y Apple Touch Icon derivados del logo suministrado, sin redibujarlo. Las fuentes y dependencias JavaScript se sirven localmente. Animaciones GSAP con alternativa de movimiento reducido y contenido accesible sin JavaScript.
+
+## Verificacion
 
 ```powershell
 python manage.py check
-python manage.py test website
+python manage.py test
 python manage.py makemigrations --check --dry-run
 docker compose config --quiet
 ```
 
-Las comprobaciones de navegador están en `scripts/check_browser.cjs`; requieren Playwright y Chrome. Revisan recursos, filtros, preselección, menú, anchos 320/390/768/1024/1440 px, movimiento reducido, formulario local y contenido sin JavaScript. Capturas en `artifacts/` (ignorado).
+40 pruebas Django y pruebas puras del carrito (`node scripts/test_cart_state.cjs`). Scripts Playwright en `scripts/check_*.cjs` requieren Node, Playwright y Chrome; las utilidades de imagen requieren sharp o Pillow segun el script. No son dependencias de ejecucion del sitio. `check_store.cjs` comprueba la tienda en siete anchos, almacenamiento y navegacion.
 
-## Flujo obligatorio
+El motor Docker no estaba disponible para la ultima comprobacion del agente. El despliegue real, TLS y SMTP no se afirman verificados por estas pruebas locales. `check --deploy` muestra advertencias esperadas con el entorno de desarrollo.
 
-Superpowers, UI UX Designer, Web Design y web-design-guidelines son obligatorios según `AGENTS.md`. El plan de trabajo y las decisiones están en `docs/`; no se requiere instalar de nuevo los complementos que ya están disponibles en la sesión.
+## Documentacion y Git
+
+- [Estado del Modulo 1](docs/modulo-1-estado.md): alcance actual y pendientes diferidos.
+- [Catalogo del cliente](docs/catalogo-cliente-2026.md): precios, fuentes y responsividad.
+- [Administracion](docs/editar-contenido.md): fotos, permisos y respaldos.
+- [Infraestructura](docs/fase-1-infraestructura.md): referencia historica y pasos de servidor; no es estado actual.
+- `AGENTS.md`: Superpowers, ui-ux-pro-max y web-design-guidelines, aplicados segun la etapa. Los antiguos plugins UI UX Designer y Web Design fueron sustituidos; no se presentan como disponibles.
+
+Rama de trabajo: `codex/pulido-visual`. `main` y `master` conservan la base anterior; un push de la rama no despliega ni fusiona automaticamente esos cambios.

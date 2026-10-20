@@ -1,0 +1,14 @@
+{% extends "base.html" %}{% load static %}
+{% block title %}{% if product %}{{ product.name }}{% else %}{{ page_title }}{% endif %} | JazAr{% endblock %}
+{% block content %}
+{% include 'includes/site_header.html' %}
+<main id="contenido" class="store-shell">
+  <a class="store-back" href="{% url 'home' %}#catalogo"><i data-lucide="arrow-left" aria-hidden="true"></i> Volver al catálogo</a>
+  {% block store_content %}{% endblock %}
+  <p class="store-feedback" data-store-feedback role="status" aria-live="polite"></p>
+  <noscript><p>Activa JavaScript para guardar tu selección. También puedes <a href="{% url 'home' %}#contacto">contactar a Jazmin</a>.</p></noscript>
+</main>
+<footer class="store-footer"><strong>JazAr / Arte y Diseño</strong><span>Una pieza. Tu historia.</span><a href="https://wa.me/525539754777">Hablemos por WhatsApp <span aria-hidden="true">↗</span></a></footer>
+{{ store_products|json_script:"store-products" }}
+{% endblock %}
+{% block motion %}<script defer src="{% static 'vendor/lucide.min.js' %}"></script><script defer src="{% static 'js/site.js' %}"></script><script defer src="{% static 'js/cart-state.js' %}"></script><script defer src="{% static 'js/store.js' %}"></script>{% endblock %}

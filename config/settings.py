@@ -13,6 +13,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin for origin in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if origin
 ]
 ROOT_URLCONF = "config.urls"
+CSRF_FAILURE_VIEW = 'website.errors.csrf_failure'
 WSGI_APPLICATION = "config.wsgi.application"
 INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",
@@ -46,6 +47,13 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+MEDIA_ROOT = BASE_DIR / 'runtime' / 'media'
+MEDIA_URL = '/media/'
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.' + name}
+    for name in ['UserAttributeSimilarityValidator', 'MinimumLengthValidator',
+                 'CommonPasswordValidator', 'NumericPasswordValidator']
+]
 if os.getenv("CONTACT_TRUST_PROXY", "0") == "1":
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = os.getenv("DJANGO_HTTPS", "0") == "1"

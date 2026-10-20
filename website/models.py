@@ -2,6 +2,9 @@ from decimal import Decimal
 
 from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.templatetags.static import static
+from .images import process_fields, validate_image
 
 
 class Product(models.Model):
@@ -26,12 +29,17 @@ class Product(models.Model):
     category = models.CharField(max_length=16, choices=Category.choices)
     technique_key = models.CharField(max_length=20, choices=Technique.choices)
     image = models.CharField(max_length=255, default="images/collection-concept.webp")
+    photo = models.ImageField(upload_to='products/', blank=True, validators=[validate_image])
+    image_alt = models.CharField(max_length=250, blank=True)
     # Unknown commercial values stay null; a concept is never offered for sale.
     price = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True,
                                 validators=[MinValueValidator(Decimal("0.00"))])
     currency = models.CharField(max_length=3, default="MXN", choices=[("MXN", "Peso mexicano")])
     stock = models.PositiveIntegerField(null=True, blank=True)
-    is_active = models.BooleanField(default=True)
+    sale_mode = models.CharField(max_length=8, choices=[('quote', 'Cotización'), ('fixed', 'Precio fijo')], default='quote')
+    price_note = models.CharField(max_length=250, blank=True)
+    catalog_page = models.PositiveSmallIntegerField(null=True, blank=True)
+    is_active = models.BooleanField(default=False)
     is_concept = models.BooleanField(default=True)
     sort_order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,6 +54,28 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self):
+        super().clean()
+        if self.is_active and self.photo and not self.image_alt.strip():
+            raise ValidationError({'image_alt': 'Describe la foto antes de publicar.'})
+        if self.sale_mode == 'fixed' and self.price is None:
+            raise ValidationError({'price': 'Indica el precio fijo antes de guardar.'})
+        if self.sale_mode == 'fixed' and self.technique_key == '3d':
+            raise ValidationError({'sale_mode': 'Las impresiones 3D personalizadas requieren cotización.'})
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        process_fields(self, ['photo'])
+        super().save(*args, **kwargs)
+
+    @property
+    def has_store_detail(self):
+        return self.is_active and not self.is_concept and self.sale_mode == "fixed" and self.price is not None
+
+    @property
+    def image_url(self):
+        return self.photo.url if self.photo else static(self.display_image)
+
     @property
     def interest(self):
         return self.category
@@ -53,3 +83,71 @@ class Product(models.Model):
     @property
     def technique(self):
         return self.get_technique_key_display()
+
+    @property
+    def display_image(self):
+        if self.is_concept and self.image == "images/collection-concept.webp":
+            return {
+                "playeras": "images/shirt-concept.webp",
+                "tazas": "images/mug-concept.webp",
+                "piezas": "images/vase-concept.webp",
+            }.get(self.slug, self.image)
+        return self.image
+
+
+class Package(models.Model):
+    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=160)
+    description = models.TextField(max_length=1500)
+    inclusions = models.TextField(max_length=1500, default='Definimos piezas, cantidad y fecha de entrega al cotizar.')
+    cta = models.CharField(max_length=80, default='Cotizar este paquete')
+    interest = models.CharField(max_length=16, choices=[('regalo', 'Regalo'), ('equipo', 'Equipo'), ('marca', 'Marca')], default='regalo')
+    icon = models.CharField(max_length=16, choices=[('gift', 'Regalo'), ('shirt', 'Prenda'), ('layers', 'Conjunto')], default='gift')
+    is_active = models.BooleanField(default=False)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['sort_order', 'pk']
+
+    def __str__(self):
+        return self.name
+
+
+class SiteContent(models.Model):
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
+    hero_title = models.CharField(max_length=100, default='Tu idea merece un buen diseño.')
+    hero_description = models.TextField(max_length=600, default='Prendas, regalos y piezas personalizadas. Con el criterio de Jazmin Zarate, diseñadora gráfica.')
+    intro_title = models.CharField(max_length=150, default='No empieza con un objeto. Empieza contigo.')
+    intro_text = models.TextField(max_length=1500, default='Soy Jazmin Zarate, diseñadora gráfica detrás de JazAr. Mi propuesta es ayudarte a transformar una idea en una pieza que tenga sentido para ti: desde cómo se ve hasta cómo se adapta al material.')
+    contact_title = models.CharField(max_length=150, default='Cuéntame qué quieres crear.')
+    contact_text = models.TextField(max_length=1000, default='Una idea muy clara o apenas una chispa. Comparte lo que tienes en mente y revisemos las posibilidades.')
+    owner_name = models.CharField(max_length=120, default='Jazmin Zarate')
+    signature = models.CharField(max_length=150, default='Diseñadora gráfica · JazAr')
+    facebook_url = models.URLField(default='https://www.facebook.com/profile.php?id=100084852678555')
+    hero_photo = models.ImageField(upload_to='site/', blank=True, validators=[validate_image])
+    hero_alt = models.CharField(max_length=250, blank=True)
+    intro_photo = models.ImageField(upload_to='site/', blank=True, validators=[validate_image])
+    intro_alt = models.CharField(max_length=250, blank=True)
+
+    class Meta:
+        verbose_name_plural = 'Contenido de la portada'
+        constraints = [models.CheckConstraint(condition=models.Q(id=1), name='site_content_singleton')]
+
+    def __str__(self):
+        return 'Portada JazAr'
+
+    def clean(self):
+        super().clean()
+        if not self.facebook_url.startswith('https://'):
+            raise ValidationError({'facebook_url': 'Usa un enlace HTTPS.'})
+        for name in ['hero', 'intro']:
+            if getattr(self, name + '_photo') and not getattr(self, name + '_alt').strip():
+                raise ValidationError({name + '_alt': 'Describe la imagen.'})
+        if self._state.adding and SiteContent.objects.exists():
+            raise ValidationError('La portada ya existe. Edita el registro actual.')
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        self.clean()
+        process_fields(self, ['hero_photo', 'intro_photo'])
+        super().save(*args, **kwargs)
