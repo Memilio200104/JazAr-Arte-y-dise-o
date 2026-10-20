@@ -60,6 +60,8 @@ Gmail usa SMTP nativo de Django, sin automatizadores externos. WhatsApp y Facebo
 
 Paginas artisticas personalizadas para 400, 403, 404 y 500, incluida la denegacion CSRF. La pagina 500 no depende de consultas de base de datos ni muestra excepciones. Django muestra su pagina tecnica 404/500 cuando `DEBUG=1`; probar los handlers con `DEBUG=False` en tests, sin cambiar el entorno habitual.
 
+Para revisarlas con el servidor local, abrir `/tienda/revision/` o `/tienda/revision/errores/400/` (tambien 403, 404 y 500). Estas vistas reutilizan las paginas originales y sus codigos HTTP, sin lanzar excepciones, sin consultas a la base de datos y sin cache. Solo funcionan con DEBUG=True; en produccion devuelven 404.
+
 Favicon ICO, PNG y Apple Touch Icon derivados del logo suministrado, sin redibujarlo. Las fuentes y dependencias JavaScript se sirven localmente. Animaciones GSAP con alternativa de movimiento reducido y contenido accesible sin JavaScript.
 
 ## Verificacion
@@ -71,7 +73,7 @@ python manage.py makemigrations --check --dry-run
 docker compose config --quiet
 ```
 
-40 pruebas Django y pruebas puras del carrito (`node scripts/test_cart_state.cjs`). Scripts Playwright en `scripts/check_*.cjs` requieren Node, Playwright y Chrome; las utilidades de imagen requieren sharp o Pillow segun el script. No son dependencias de ejecucion del sitio. `check_store.cjs` comprueba la tienda en siete anchos, almacenamiento y navegacion.
+43 pruebas Django y pruebas puras del carrito (`node scripts/test_cart_state.cjs`). Scripts Playwright en `scripts/check_*.cjs` requieren Node, Playwright y Chrome; las utilidades de imagen requieren sharp o Pillow segun el script. No son dependencias de ejecucion del sitio. `check_store.cjs` comprueba la tienda en siete anchos, almacenamiento y navegacion. `check_errors.cjs` comprueba las rutas locales reales de previsualizacion en cuatro anchos.
 
 El motor Docker no estaba disponible para la ultima comprobacion del agente. El despliegue real, TLS y SMTP no se afirman verificados por estas pruebas locales. `check --deploy` muestra advertencias esperadas con el entorno de desarrollo.
 

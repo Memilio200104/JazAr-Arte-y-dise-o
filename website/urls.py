@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 from . import store_views
+from . import errors
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -15,4 +16,5 @@ urlpatterns = [
     path("pedido/solicitud/", store_views.screen, {"page": "order_request"}, name="order_request"),
     path("pedido/pago/", store_views.screen, {"page": "payment"}, name="payment"),
     path("tienda/revision/", store_views.screen, {"page": "review"}, name="store_review"),
+    path("tienda/revision/errores/<int:status>/", errors.preview, name="error_preview"),
 ]

@@ -1,13 +1,11 @@
 const {chromium}=require('playwright');
-const fs=require('fs');
 const assert=require('node:assert/strict');
 (async()=>{
   const browser=await chromium.launch({channel:'chrome',headless:true});
   try {
     const page=await browser.newPage();
     for(const status of [400,403,404,500]) {
-      const url=`http://127.0.0.1:8000/__test-error-${status}`;
-      await page.route(url,route=>route.fulfill({status,contentType:'text/html',body:fs.readFileSync(`artifacts/error-${status}.html`,'utf8')}));
+      const url=`http://127.0.0.1:8000/tienda/revision/errores/${status}/`;
       for(const width of [320,390,844,1440]) {
         await page.setViewportSize({width,height:900});
         const response=await page.goto(url,{waitUntil:'networkidle'});
