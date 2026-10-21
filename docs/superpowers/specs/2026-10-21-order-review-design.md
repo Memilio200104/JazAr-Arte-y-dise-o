@@ -1,6 +1,6 @@
 # Pedidos y aprobacion de diseno
 
-Estado: propuesta escrita para revision del usuario. Alcance conversacional aprobado; implementacion aun no iniciada.
+Estado: especificacion aprobada por el usuario. Implementacion pendiente de revision del plan.
 
 ## Objetivo y decisiones confirmadas
 
