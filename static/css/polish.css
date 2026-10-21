@@ -412,7 +412,7 @@ button {
   .wordmark .brand-type {
     font-size: 24px;
   }
-  nav {
+  #site-nav {
     gap: 18px;
   }
 }

@@ -97,4 +97,4 @@
 
 ## Handoff
 
-Plan pendiente de revision del usuario. Metodo ya elegido: ejecucion directa en la carpeta actual, con revision independiente al final. No volver a preguntar por metodo ni worktree.
+Plan aprobado y ejecutado en la carpeta actual, con revision independiente al final. Resultados y desviaciones reales en `docs/customer-accounts-progress.md`; las listas anteriores conservan la especificacion original, no representan el estado actual.

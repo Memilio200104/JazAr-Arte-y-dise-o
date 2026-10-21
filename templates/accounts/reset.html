@@ -1,0 +1,2 @@
+{% extends 'store/base.html' %}
+{% block store_content %}<div class="store-heading"><h1>{{ page_title }}</h1></div>{% if validlink %}<form method="post" class="account-form">{% csrf_token %}{% include 'accounts/fields.html' %}<button class="button button-primary">Guardar contraseña</button></form>{% else %}<p>Este enlace venció o ya se utilizó.</p><a class="text-link" href="{% url 'recover' %}">Solicitar otro enlace</a>{% endif %}{% endblock %}

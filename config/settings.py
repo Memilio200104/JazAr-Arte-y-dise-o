@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",
     "django.contrib.sessions", "django.contrib.messages", "django.contrib.staticfiles",
     "website.apps.WebsiteConfig",
+    "accounts.apps.AccountsConfig",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -54,6 +55,10 @@ AUTH_PASSWORD_VALIDATORS = [
     for name in ['UserAttributeSimilarityValidator', 'MinimumLengthValidator',
                  'CommonPasswordValidator', 'NumericPasswordValidator']
 ]
+AUTHENTICATION_BACKENDS = ['accounts.backends.CustomerEmailBackend', 'django.contrib.auth.backends.ModelBackend']
+LOGIN_URL = '/cuenta/ingresar/'
+PASSWORD_RESET_TIMEOUT = 86400
+ACCOUNT_ORIGIN = os.getenv('ACCOUNT_ORIGIN', 'http://127.0.0.1:8000' if DEBUG else '')
 if os.getenv("CONTACT_TRUST_PROXY", "0") == "1":
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = os.getenv("DJANGO_HTTPS", "0") == "1"
