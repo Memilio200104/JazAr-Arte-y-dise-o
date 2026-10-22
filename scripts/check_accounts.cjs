@@ -31,6 +31,13 @@ const {randomUUID}=require('node:crypto');
    for(const path of ['/cuenta/','/cuenta/direcciones/','/cuenta/direcciones/nueva/']) {
     await page.goto(root+path);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,path+' '+width);
+    if(path==='/cuenta/') {
+     const orders=page.getByRole('link',{name:'Mis pedidos',exact:true});
+     assert.equal(await orders.isVisible(),true);
+     assert.equal(await orders.getAttribute('href'),'/cuenta/pedidos/');
+     assert.ok((await orders.boundingBox()).height>=44);
+     if([390,1440].includes(width)) await page.screenshot({path:`artifacts/account-orders-${width}.png`,fullPage:true});
+    }
     assert.equal(await page.locator('.account-links').evaluate(el=>getComputedStyle(el).position),'static','Account navigation must stay in its section');
    }
    if([390,1440].includes(width)) await page.screenshot({path:`artifacts/accounts-address-${width}.png`,fullPage:true});

@@ -44,6 +44,8 @@ ui-ux-pro-max aplicado al flujo y controles. Web Interface Guidelines vigente co
 
 ## Resultado final (22 de octubre de 2026)
 
+Mejora posterior aprobada: Mis pedidos ahora es un boton magenta con icono, debajo del titulo de Mi cuenta. Prueba de template RED/GREEN y recorrido de cuentas en cinco anchos PASS; captura movil inspeccionada. Reutiliza foco, contraste y movimiento reducido existentes; revision web-design-guidelines sin incidencias en este cambio acotado.
+
 - Suite completa: 80 pruebas Django PASS; concurrencia SQLite de archivo PASS.
 - check_orders PASS: solicitud, stock cambiado antes de confirmar, carrito preservado, aprobacion/revocacion, cambios, pago inactivo, 5 anchos y alternativa sin JS. Capturas de formulario, detalle y admin movil inspeccionadas.
 - check_accounts, check_store, check_browser, check_process, check_hero, check_errors y test_cart_state PASS.

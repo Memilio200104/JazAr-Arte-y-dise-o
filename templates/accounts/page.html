@@ -1,7 +1,7 @@
 {% extends 'store/base.html' %}
 {% block store_content %}
 <div class="store-heading"><p class="eyebrow">JAZAR / TU ESPACIO</p><h1>{{ page_title }}</h1></div>
-{% if kind == 'account' %}<p class="order-account-link"><a class="text-link" href="{% url 'order_list' %}">Consultar mis pedidos <i data-lucide="package" aria-hidden="true"></i></a></p>{% endif %}
+{% if kind == 'account' %}<p class="order-account-link"><a class="button button-primary" href="{% url 'order_list' %}">Mis pedidos <i data-lucide="package" aria-hidden="true"></i></a></p>{% endif %}
 {% for message in messages %}<p class="account-alert" role="status">{{ message }}</p>{% endfor %}
 <div class="account-layout"><section class="account-main">
 {% if form %}<form method="post" class="account-form">{% csrf_token %}{% include 'accounts/fields.html' %}<button class="button button-primary" type="submit">{{ action_label }} <i data-lucide="arrow-right" aria-hidden="true"></i></button></form>{% endif %}

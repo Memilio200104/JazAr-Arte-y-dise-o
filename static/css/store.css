@@ -5,6 +5,7 @@
 .store-shell h1,.store-shell h2{text-wrap:balance}
 .photo-dialog{overscroll-behavior:contain}
 .store-shell button,.store-shell a{touch-action:manipulation}
+.order-account-link{margin:0 0 32px}.order-account-link .button{min-width:200px;max-width:100%}
 @media(min-width:1024px){.store-nav{margin-left:22px}.site-header{gap:16px}}
 @media(max-width:1100px){.store-product,.store-columns{gap:32px}.store-product h1{font-size:36px}.store-shell{padding-left:28px;padding-right:28px}}
 @media(max-width:767px){.store-shell{padding:115px 20px 48px}.store-back{margin-bottom:22px}.store-product,.store-columns,.review-states{grid-template-columns:1fr;gap:28px}.store-product h1,.store-heading h1{font-size:32px}.store-heading{padding-bottom:24px;margin-bottom:20px}.store-photo{max-width:520px;width:100%;margin:auto}.store-photo>p{flex-wrap:wrap}.store-product-copy .eyebrow{margin-top:8px}.store-account-story{padding:28px}.store-monogram{font-size:48px;margin-bottom:26px}.cart-row{grid-template-columns:72px minmax(0,1fr) 44px;gap:12px}.cart-row img{width:72px;height:90px}.cart-row label{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.cart-row input{margin:0}.store-footer{padding:28px 20px}.store-nav{gap:0}.site-header .brand-logo{width:44px;height:44px}.site-header .brand-type{font-size:25px}.site-header{gap:8px}.store-account-story h2{font-size:26px}}

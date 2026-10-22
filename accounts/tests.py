@@ -101,6 +101,10 @@ class AccountTests(TestCase):
         self.assertContains(r,'Nombre &lt;nuevo&gt;')
         self.assertIn('no-store',r.headers['Cache-Control'])
 
+    def test_orders_primary_link(self):
+        self.login()
+        self.assertContains(self.client.get('/cuenta/'), '<a class="button button-primary" href="/cuenta/pedidos/">Mis pedidos <i data-lucide="package" aria-hidden="true"></i></a>', html=True)
+
     def test_address_defaults(self):
         a=save_address(self.customer,self.address())
         b=save_address(self.customer,{**self.address(),'label':'Otra'})
