@@ -1,6 +1,6 @@
 # Pedidos y aprobacion de diseno
 
-Estado: especificacion aprobada por el usuario. Implementacion pendiente de revision del plan.
+Estado: especificacion y plan aprobados, implementacion verificada. Resultados y decisiones en docs/order-review-progress.md.
 
 ## Objetivo y decisiones confirmadas
 

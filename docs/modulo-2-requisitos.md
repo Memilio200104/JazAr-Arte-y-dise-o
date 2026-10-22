@@ -37,4 +37,4 @@ No copiar direccion, origen postal, embalajes de consolas ni estimaciones de pes
 - Reserva de stock, momento de liberacion y entrega estimada. Las variantes comparten las 30 unidades del producto.
 - Verificacion y recuperacion de cuenta durante pruebas sin Gmail real.
 
-Frontend aprobado e implementado por separado: paginas GET de lectura y seleccion local, sin rutas transaccionales. Especificacion y plan en docs/superpowers. El backend sigue pendiente de su especificacion. La cuenta administrativa local no equivale a una cuenta de comprador.
+Cuentas y solicitudes de pedido implementadas con especificaciones y planes aprobados en docs/superpowers. La revision administrativa no realiza cobros. Envio, reservas y Stripe siguen pendientes de su bloque; el panel propio del sitio y Gmail pertenecen al Modulo 3. La cuenta administrativa local no equivale a una cuenta de comprador.

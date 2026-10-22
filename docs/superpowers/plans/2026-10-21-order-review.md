@@ -100,4 +100,4 @@
 
 Cobertura comprobada: snapshots e inventario (1), validacion/idempotencia/limites (2), permisos/auditoria/version (3), UI y privacidad (4), regresiones/operacion (5). No dependencias de proveedor externo ni datos de envio inventados. Firmas usadas por consumidores coinciden con interfaces declaradas.
 
-Pendiente: revision del usuario de este plan. Metodo conservado: ejecucion directa, una revision independiente al final.
+Plan aprobado y ejecutado directamente, con revision independiente final. Las listas anteriores conservan los pasos originales; resultados y decisiones de ejecucion en docs/order-review-progress.md.

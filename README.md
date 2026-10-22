@@ -39,10 +39,10 @@ La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se 
 
 - Contenido comercial aprobado por el usuario.
 - Despliegue a cargo del usuario, una vez terminados ambos modulos.
-- Gmail real se configura al final del Modulo 2. Mantener `CONTACT_LOCAL_MODE=1` durante estas pruebas: el formulario no envia correos reales y lo informa.
+- Gmail real y notificaciones operativas quedan para el Modulo 3. Mantener `CONTACT_LOCAL_MODE=1` durante estas pruebas: el formulario no envia correos reales y lo informa.
 - Operacion reportada como probada por el usuario; no equivale a una validacion adicional del servidor realizada por Codex.
-- Los productos fijos abren una ficha propia y se pueden agregar a una seleccion local en `/carrito/`. No reserva stock ni genera pedidos.
-- Registro, ingreso por correo, recuperacion, perfil y direcciones ya tienen backend. Solicitud de pedido y pago siguen sin backend transaccional: no hay Stripe ni webhooks y las acciones definitivas permanecen deshabilitadas.
+- Los productos fijos abren una ficha propia y se agregan a una seleccion local en `/carrito/`. Continuar permite crear una solicitud real desde `/pedido/solicitud/`, con cuenta, direccion y resumen confirmado. No reserva stock ni cobra.
+- Registro, ingreso por correo, recuperacion, perfil, direcciones y solicitudes ya tienen backend. Jazmin aprueba el diseno desde Django Admin; el cliente consulta `/cuenta/pedidos/`. No hay Stripe ni webhooks: incluso aprobado, el pago sigue inactivo hasta integrar envio y pasarela.
 - `/tienda/revision/` permite revisar todas las pantallas y ejemplos de estados solo con DEBUG=True; devuelve 404 en produccion.
 - Precios visibles no activan compras. Impresion 3D y excepciones marcadas en el PDF se cotizan.
 - Disenos sobre prendas negras: DTF. Los modelos multicolor indican la regla segun el color elegido.
@@ -73,7 +73,7 @@ python manage.py makemigrations --check --dry-run
 docker compose config --quiet
 ```
 
-67 pruebas Django y pruebas puras del carrito (`node scripts/test_cart_state.cjs`). Scripts Playwright en `scripts/check_*.cjs` requieren Node, Playwright y Chrome; las utilidades de imagen requieren sharp o Pillow segun el script. No son dependencias de ejecucion del sitio. `check_store.cjs` comprueba la tienda en siete anchos, almacenamiento y navegacion. `check_errors.cjs` comprueba las rutas locales reales de previsualizacion en cuatro anchos. `check_accounts.cjs` recorre cuentas y direcciones en una base aislada; consultar [cuentas de clientes](docs/customer-accounts-progress.md).
+Suite Django y pruebas puras del carrito (`node scripts/test_cart_state.cjs`). Scripts Playwright en `scripts/check_*.cjs` requieren Node, Playwright y Chrome; las utilidades de imagen requieren sharp o Pillow segun el script. No son dependencias de ejecucion del sitio. `check_store.cjs` comprueba la tienda en siete anchos. `check_errors.cjs` comprueba los errores en cuatro anchos. `check_accounts.cjs` y `check_orders.cjs` usan el servidor aislado del puerto 8011. Consultar [cuentas](docs/customer-accounts-progress.md) y [pedidos y aprobacion](docs/order-review-progress.md) para comandos y resultados.
 
 El motor Docker no estaba disponible para la ultima comprobacion del agente. El despliegue real, TLS y SMTP no se afirman verificados por estas pruebas locales. `check --deploy` muestra advertencias esperadas con el entorno de desarrollo.
 
