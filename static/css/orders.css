@@ -1,0 +1,15 @@
+.order-section-title{font-size:24px;margin:28px 0 16px;line-height:1.3}
+.order-line{border-bottom:1px solid #ccc;padding:24px 0;overflow-wrap:anywhere}
+.order-line h2,.order-line h3{font-size:22px;line-height:1.4;margin-bottom:12px}
+.order-line p,.order-text p{margin:10px 0;line-height:1.6}
+.order-line label{display:block;margin:16px 0 8px}
+.order-line textarea,.account-field select{width:100%;min-height:48px;padding:12px;font:inherit;border:1px solid #aaa;background:#fff;color:#171717}
+.order-line textarea:focus-visible,.account-field select:focus-visible{outline:3px solid #00869b;outline-offset:4px}
+.order-submit{display:flex;margin-top:24px!important;width:100%}.order-text{white-space:pre-line;overflow-wrap:anywhere}
+.order-reference{font-size:14px;margin-top:20px;overflow-wrap:anywhere}
+.order-edit,.order-account-link{margin:24px 0}
+.order-edit button{font:inherit;cursor:pointer;background:transparent;border:0;min-height:44px}
+.order-pagination{display:flex;gap:24px;align-items:center;margin-top:24px}
+.order-pagination a{min-height:44px;display:inline-flex;align-items:center}
+.order-list h2{font-size:20px}.store-summary .button{width:100%}
+@media(prefers-reduced-motion:no-preference){.order-line{animation:order-reveal .25s ease-out}@keyframes order-reveal{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}}

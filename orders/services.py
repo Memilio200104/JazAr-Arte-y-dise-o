@@ -36,9 +36,11 @@ def review_order(actor,order_id,expected_version,target_status,note):
         return order
     now=timezone.now()
     approved=target_status==Order.Status.APPROVED
+    keep_approval=approved and order.review_status==Order.Status.APPROVED
     changed=Order.objects.filter(pk=order.pk,version=expected_version).update(
         review_status=target_status,review_note=note,version=F('version')+1,updated_at=now,
-        approved_by=actor if approved else None,approved_at=now if approved else None)
+        approved_by=order.approved_by if keep_approval else (actor if approved else None),
+        approved_at=order.approved_at if keep_approval else (now if approved else None))
     if not changed:
         raise ReviewConflict('Otra revisión cambió este pedido. Recarga antes de guardar.')
     OrderReviewEvent.objects.create(order=order,actor=actor,from_status=order.review_status,to_status=target_status,note=note)

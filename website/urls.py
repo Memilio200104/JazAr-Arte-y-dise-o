@@ -10,7 +10,7 @@ urlpatterns = [
     path("productos/<slug:slug>/", store_views.product_detail, name="product_detail"),
     path("carrito/", store_views.screen, {"page": "cart"}, name="cart"),
     path("cuenta/", include('accounts.urls')),
-    path("pedido/solicitud/", store_views.screen, {"page": "order_request"}, name="order_request"),
+    path("", include('orders.urls')),
     path("pedido/pago/", store_views.screen, {"page": "payment"}, name="payment"),
     path("tienda/revision/", store_views.screen, {"page": "review"}, name="store_review"),
     path("tienda/revision/errores/<int:status>/", errors.preview, name="error_preview"),

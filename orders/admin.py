@@ -33,6 +33,7 @@ class ItemInline(admin.TabularInline):
     can_delete=False
     def has_add_permission(self,request,obj=None): return False
     def has_change_permission(self,request,obj=None): return False
+    def has_view_permission(self,request,obj=None): return request.user.has_perm('orders.view_order')
 
 
 class EventInline(ItemInline):

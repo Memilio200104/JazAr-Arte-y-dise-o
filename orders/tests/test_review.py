@@ -33,6 +33,15 @@ class ReviewTests(TestCase):
         self.assertIsNone(changed.approved_at); self.assertIsNone(changed.approved_by)
         self.assertEqual(changed.review_events.count(),2)
 
+    def test_note_edit_preserves_approval_attribution(self):
+        approved=review_order(self.staff,self.order.pk,0,'approved','Bien')
+        another=get_user_model().objects.create_user('staff2',is_staff=True)
+        another.user_permissions.add(Permission.objects.get(codename='approve_order'))
+        edited=review_order(another,self.order.pk,1,'approved','Nota adicional')
+        self.assertEqual(edited.approved_by_id,approved.approved_by_id)
+        self.assertEqual(edited.approved_at,approved.approved_at)
+        self.assertEqual(edited.review_events.last().actor,another)
+
     def test_review_rollback(self):
         with patch('orders.services.OrderReviewEvent.objects.create',side_effect=OperationalError):
             with self.assertRaises(OperationalError): review_order(self.staff,self.order.pk,0,'approved','')
@@ -41,7 +50,9 @@ class ReviewTests(TestCase):
     def test_admin_review(self):
         self.client.force_login(self.staff)
         url=f'/admin/orders/order/{self.order.pk}/review/'
-        self.assertContains(self.client.get(f'/admin/orders/order/{self.order.pk}/change/'),'Diseño revisado')
+        change=self.client.get(f'/admin/orders/order/{self.order.pk}/change/')
+        self.assertContains(change,'Diseño revisado')
+        self.assertContains(change,'Azul')
         response=self.client.post(url,{'approved':'on','version':0,'note':'','subtotal':'1','customer':999})
         self.assertEqual(response.status_code,302)
         self.order.refresh_from_db(); self.assertEqual(self.order.review_status,'approved')

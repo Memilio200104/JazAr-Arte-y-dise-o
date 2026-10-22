@@ -1,0 +1,23 @@
+{% extends 'orders/base.html' %}
+{% block store_content %}
+<div class="store-heading"><p class="eyebrow">JAZAR / TU PRÓXIMA PIEZA</p><h1>{% if quote %}Revisa cada detalle.{% else %}Demos forma a tu pedido.{% endif %}</h1></div>
+{% if error %}<p class="account-alert" role="alert" tabindex="-1" data-order-error>{{ error }}</p>{% endif %}
+<div class="store-columns"><section>
+{% if quote %}
+<h2 class="order-section-title">Tu selección</h2>
+{% for item in quote.rows %}<article class="order-line"><h3>{{ item.name }}</h3><p>{{ item.quantity }} × ${{ item.unit_price }} MXN</p>{% if item.details %}<p>{{ item.details }}</p>{% endif %}</article>{% endfor %}
+<h2 class="order-section-title">Dirección de envío</h2>{% include 'orders/address.html' with address=quote.shipping_address %}
+{% if quote.notes %}<h2 class="order-section-title">Tus notas</h2><p class="order-text">{{ quote.notes }}</p>{% endif %}
+<form method="post" class="order-edit">{% csrf_token %}<input type="hidden" name="action" value="edit">{{ form.rows }}<input type="hidden" name="address" value="{{ quote.address_id }}"><input type="hidden" name="notes" value="{{ quote.notes }}"><button class="text-link" type="submit">Editar detalles</button></form>
+{% else %}
+{% if has_addresses %}<form method="post" class="account-form" data-order-request>{% csrf_token %}<input type="hidden" name="action" value="preview">{{ form.rows }}
+{% if form.errors %}<div class="account-alert" role="alert" tabindex="-1" data-order-error>{{ form.non_field_errors }}{{ form.rows.errors }}</div>{% endif %}
+<h2 class="order-section-title">Las piezas que elegiste</h2><div data-order-lines></div><p data-order-selection-status role="status"></p>
+{% for field in form.visible_fields %}<div class="account-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.errors %}<div id="{{ field.id_for_label }}_error" class="field-error">{{ field.errors }}</div>{% endif %}</div>{% endfor %}
+<a class="text-link" href="{% url 'addresses' %}">Administrar direcciones</a><button class="button button-primary order-submit" type="submit" data-order-preview disabled>Revisar resumen <i data-lucide="arrow-right" aria-hidden="true"></i></button></form>
+{% else %}<h2>¿A dónde irá tu idea?</h2><p class="store-note">Agrega una dirección a tu cuenta para preparar la solicitud. Tu carrito se conserva.</p><a class="button button-primary" href="{% url 'address_new' %}">Agregar dirección <i data-lucide="plus" aria-hidden="true"></i></a><a class="account-links" href="{% url 'order_request' %}">Ya agregué mi dirección</a>{% endif %}
+{% endif %}</section><aside class="store-summary"><p class="eyebrow">PRIMERO, EL DISEÑO</p><h2>Tu idea, en buenas manos.</h2>
+{% if quote %}<div class="summary-line"><span>Subtotal de referencia</span><strong>${{ quote.subtotal }} MXN</strong></div>{% endif %}
+<div class="summary-line"><span>Envío</span><span>Pendiente de calcular</span></div><p>Envía tu PDF o PNG por WhatsApp después de crear la solicitud. Jazmin revisará el diseño antes del pago.</p><p class="store-note">Esta solicitud no reserva existencias ni realiza un cobro. La disponibilidad y el importe final se confirmarán antes de pagar.</p>
+{% if quote %}<form method="post">{% csrf_token %}<input type="hidden" name="action" value="confirm"><input type="hidden" name="quote_token" value="{{ quote_token }}"><input type="hidden" name="idempotency_key" value="{{ idempotency_key }}"><button class="button button-primary" type="submit">Solicitar revisión <i data-lucide="send" aria-hidden="true"></i></button></form>{% endif %}</aside></div>
+{% endblock %}
