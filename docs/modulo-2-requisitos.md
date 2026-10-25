@@ -28,11 +28,21 @@ https://jimmygames.store/ consultada el 19 de octubre de 2026. Publica envio nac
 
 La aclaracion posterior del usuario prevalece: tarifas dinamicas dentro de la web, sin adoptar la promocion de envio gratis ni habilitar recogida en el checkout.
 
-No copiar direccion, origen postal, embalajes de consolas ni estimaciones de peso de Jimmy Games como datos de JazAr. Hace falta seleccionar el proveedor/API de tarifas y obtener el origen de los envios y los pesos y dimensiones de los paquetes.
+No copiar direccion, origen postal, embalajes de consolas ni estimaciones de peso de Jimmy Games como datos de JazAr.
+
+### Confirmaciones del 25 de octubre de 2026
+
+- El usuario eligio comenzar con Envia.com. La integracion inicial sera de pruebas; no hay cuenta ni credenciales configuradas todavia.
+- Origen proporcionado por el usuario: 2a Privada de Aconitos, numero 729, manzana K7, lote 16, Villa de las Flores, Coacalco, Estado de Mexico, Mexico. Codigo postal confirmado: 55710.
+- El origen queda registrado como requisito, no como configuracion operativa ni validacion del domicilio por el proveedor.
+- Pendiente obtener pesos y dimensiones de los paquetes ya embalados; no usar valores inventados para cotizaciones reales.
+- Autorizado definir empaques, pesos y dimensiones provisionales para desarrollar y probar; Jazmin proporcionara los definitivos antes de activar ventas reales. Propuesta: perfiles editables desde Django Admin.
+- Los datos provisionales no deben impedir probar el flujo completo de Stripe en modo pruebas, sin dinero real. Su validacion sera requisito para activar cobros reales, no para las pruebas.
+- La interfaz publica de JazAr no mostrara etiquetas de demo ni avisos de prueba. El estado provisional se identificara internamente en administracion; no ocultar los indicadores propios de pruebas de Stripe.
 
 ## Preguntas abiertas para la especificacion
 
-- Proveedor/API de envio, cuenta comercial, domicilio y codigo postal de origen, cobertura, pesos y dimensiones de paquetes. Definir vigencia y recotizacion de tarifas antes del pago.
+- Cuenta de pruebas de Envia.com, credenciales, validacion del origen por el proveedor, cobertura, pesos y dimensiones de paquetes. Definir vigencia y recotizacion de tarifas antes del pago.
 - Definir inicio de las 24 horas de cancelacion (creacion del pedido o pago posterior a la aprobacion) y base del limite: subtotal de productos o total pagado con envio; procedimiento y monto de reembolso, tratamiento de pedidos ya en produccion.
 - Reserva de stock, momento de liberacion y entrega estimada. Las variantes comparten las 30 unidades del producto.
 - Verificacion y recuperacion de cuenta durante pruebas sin Gmail real.
