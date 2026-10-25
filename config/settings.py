@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "website.apps.WebsiteConfig",
     "accounts.apps.AccountsConfig",
     "orders.apps.OrdersConfig",
+    "shipping.apps.ShippingConfig",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -86,4 +87,17 @@ CONTACT_TRUST_PROXY = os.getenv("CONTACT_TRUST_PROXY", "0") == "1"
 CONTACT_RATE_LIMIT = 5
 CONTACT_RATE_WINDOW = 600
 CONTACT_CACHE_DIR = BASE_DIR / "runtime" / "cache"
+ENVIA_TOKEN = os.getenv('ENVIA_TOKEN', '')
+ENVIA_CARRIERS = [value.strip() for value in os.getenv('ENVIA_CARRIERS', 'dhl,fedex,estafeta').split(',') if value.strip()]
+SHIPPING_ORIGIN = {
+    'name': os.getenv('SHIPPING_ORIGIN_NAME', 'JazAr Arte y Diseno'),
+    'phone': os.getenv('SHIPPING_ORIGIN_PHONE', '5539754777'),
+    'street': os.getenv('SHIPPING_ORIGIN_STREET', '2a Privada de Aconitos'),
+    'number': os.getenv('SHIPPING_ORIGIN_NUMBER', '729'),
+    'district': os.getenv('SHIPPING_ORIGIN_DISTRICT', 'Villa de las Flores'),
+    'city': os.getenv('SHIPPING_ORIGIN_CITY', 'Coacalco'),
+    'state': os.getenv('SHIPPING_ORIGIN_STATE', 'EM'),
+    'country': 'MX', 'postalCode': os.getenv('SHIPPING_ORIGIN_POSTCODE', '55710'),
+    'reference': os.getenv('SHIPPING_ORIGIN_REFERENCE', 'Manzana K7 lote 16'),
+}
 DATA_UPLOAD_MAX_MEMORY_SIZE = 32768
