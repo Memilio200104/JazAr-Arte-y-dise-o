@@ -39,6 +39,8 @@ No copiar direccion, origen postal, embalajes de consolas ni estimaciones de pes
 - Autorizado definir empaques, pesos y dimensiones provisionales para desarrollar y probar; Jazmin proporcionara los definitivos antes de activar ventas reales. Propuesta: perfiles editables desde Django Admin.
 - Los datos provisionales no deben impedir probar el flujo completo de Stripe en modo pruebas, sin dinero real. Su validacion sera requisito para activar cobros reales, no para las pruebas.
 - La interfaz publica de JazAr no mostrara etiquetas de demo ni avisos de prueba. El estado provisional se identificara internamente en administracion; no ocultar los indicadores propios de pruebas de Stripe.
+- Stripe Checkout alojado elegido: redirigir a la pagina de Stripe y volver al pedido.
+- El usuario aprueba el diseno de envios/pago con esta correccion: agrupar productos compatibles en cajas compartidas por envio, no cotizar automaticamente un paquete por unidad. Se permiten varias cajas cuando capacidad, peso o proteccion lo requieren. Pesos y capacidades provisionales se validaran antes de ventas reales.
 
 ## Preguntas abiertas para la especificacion
 

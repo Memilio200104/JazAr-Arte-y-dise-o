@@ -1,8 +1,8 @@
 # Envios y pago con Stripe Checkout
 
-Estado: propuesta para aprobacion. 25 de octubre de 2026.
+Estado: aprobado por el usuario con agrupacion de productos por envio. 25 de octubre de 2026.
 
-Revision independiente de planificabilidad completada: sin preguntas importantes pendientes. Sigue pendiente la aprobacion del usuario de este documento; no se ha implementado el bloque.
+Revision independiente inicial completada: sin preguntas importantes pendientes. Correccion posterior solicitada por el usuario: agrupar productos, no cotizar un paquete por unidad. No se ha implementado el bloque.
 
 ## Intencion y decisiones recibidas
 
@@ -24,13 +24,17 @@ Dividir la implementacion en envios, reservas y pagos, con contratos comunes. Es
 
 Fuera de este bloque: descuentos, impuestos calculados dinamicamente, OXXO/transferencias o medios de confirmacion diferida, reembolsos automaticos, politica final de cancelacion, notificaciones Gmail y despliegue. La regla comercial de 24 horas/menos de 2000 permanece pendiente de precisar antes de activar ventas reales; no publicar una interpretacion inventada.
 
-## Propuestas tecnicas para aprobar
+## Diseno aprobado y decisiones de implementacion
 
 ### Empaques y cotizaciones
 
-Crear perfiles de empaque editables en admin: codigo, nombre, dimensiones exteriores en cm, peso del paquete embalado en kg, activo, validado y fecha/autor de validacion. Asignacion por producto. Semillas provisionales explicitas y reversibles solo donde falte perfil; nunca sobrescribir ajustes de Jazmin. Valores concretos a elegir durante implementacion, marcados internos como provisionales.
+Crear perfiles de caja editables en admin: codigo, nombre, dimensiones exteriores en cm, tara en kg, peso bruto maximo, capacidad entera, activo, validado y fecha/autor de validacion. Por producto, registrar peso unitario protegido, perfil compatible y unidades de capacidad ocupadas. Semillas provisionales explicitas y reversibles solo donde falte perfil; nunca sobrescribir ajustes de Jazmin. Valores concretos a elegir durante implementacion, marcados internos como provisionales.
 
-Regla inicial deliberadamente sencilla: un paquete por unidad, con sus dimensiones y peso completos. No sumar dimensiones ni inventar acomodo 3D. Puede resultar mas caro que agrupar productos; optimizar embalajes queda fuera. Pedidos multiples se cotizan como multiples paquetes; si el servicio no los soporta, no ofrecer esa tarifa. Los limites del proveedor se validan antes de consultar. Productos sin perfil activo no pueden cotizarse.
+Agrupar unidades de productos compatibles en cajas compartidas hasta alcanzar capacidad o peso bruto maximo; abrir otra caja solo cuando sea necesario. Decision tecnica: reglas de capacidad declaradas por perfil, no simulacion geometrica 3D ni suma de dimensiones. Una unidad debe caber individualmente en el perfil declarado. No mezclar perfiles incompatibles (por ejemplo, fragiles sin proteccion compatible). Las reglas de capacidad representan acomodos que Jazmin debe validar; los provisionales solo sirven en sandbox. No se promete el numero matematicamente minimo de cajas.
+
+Algoritmo determinista first-fit decreasing por capacidad ocupada, peso y producto id; cada caja conserva dimensiones exteriores del perfil y peso tara + suma de pesos unitarios protegidos. El mismo pedido/configuracion produce los mismos paquetes. Copiar composicion por caja para trazabilidad. Agrupar distintos productos si comparten perfil, respetar cantidades y limites, y rechazar unidades que excedan por si solas capacidad/peso. No truncar cantidades ni omitir productos.
+
+Cotizar todas las cajas del envio juntas; si el servicio no soporta la cantidad resultante, no ofrecer esa tarifa. Los limites del proveedor se validan antes de consultar. Productos sin perfil activo no pueden cotizarse. Cambios de pesos, capacidades, asignaciones o dimensiones invalidan la cotizacion anterior, pero no alteran snapshots de sesiones de pago abiertas.
 
 ShippingQuote conserva propietario/pedido, direccion y paquetes copiados, revision de configuracion, servicio/transportista, moneda, importe final en centavos, referencia del proveedor y vencimiento. Precios exclusivamente del servidor y respuesta validada del proveedor. Solo MXN y destinos Mexico inicialmente; excluir respuestas incompletas, moneda distinta o importes invalidos. Sin tarifa ficticia de respaldo ni envio gratis implicito.
 
