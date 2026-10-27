@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import Product, Package, SiteContent
+from .admin_forms import ProductAdminForm
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    form = ProductAdminForm
     list_display = ('name', 'thumbnail', 'sku', 'sale_mode', 'price', 'technique_key', 'is_active', 'is_concept', 'sort_order')
     list_filter = ('sale_mode', 'is_active', 'is_concept', 'technique_key', 'category')
     search_fields = ('name', 'sku', 'description')
@@ -13,7 +15,7 @@ class ProductAdmin(admin.ModelAdmin):
         ('Contenido', {'fields': ('name', 'slug', 'description', 'category', 'technique_key')}),
         ('Imagen', {'fields': ('photo', 'image_alt', 'is_concept', 'image')}),
         ('Publicacion', {'fields': ('is_active', 'sort_order')}),
-        ('Datos comerciales; no habilitan cobros', {'fields': ('sku', 'sale_mode', 'price', 'price_note', 'currency', 'stock', 'catalog_page')}),
+        ('Datos comerciales', {'fields': ('sku', 'sale_mode', 'price', 'price_note', 'currency', 'stock', 'stock_snapshot', 'catalog_page')}),
     )
 
     @admin.display(description='Imagen')

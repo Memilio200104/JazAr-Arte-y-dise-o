@@ -49,4 +49,4 @@ No copiar direccion, origen postal, embalajes de consolas ni estimaciones de pes
 - Reserva de stock, momento de liberacion y entrega estimada. Las variantes comparten las 30 unidades del producto.
 - Verificacion y recuperacion de cuenta durante pruebas sin Gmail real.
 
-Cuentas y solicitudes de pedido implementadas con especificaciones y planes aprobados en docs/superpowers. La revision administrativa no realiza cobros. Envio, reservas y Stripe siguen pendientes de su bloque; el panel propio del sitio y Gmail pertenecen al Modulo 3. La cuenta administrativa local no equivale a una cuenta de comprador.
+Cuentas y solicitudes implementadas con especificaciones y planes aprobados en docs/superpowers. La revision administrativa no realiza cobros. Envio agrupado, reservas y Stripe Checkout de pruebas implementados: ver docs/shipping-checkout-progress.md para verificaciones y pendientes externos. Sin credenciales no se ha validado el recorrido sandbox real. El panel propio del sitio y Gmail pertenecen al Modulo 3. La cuenta administrativa local no equivale a una cuenta de comprador.

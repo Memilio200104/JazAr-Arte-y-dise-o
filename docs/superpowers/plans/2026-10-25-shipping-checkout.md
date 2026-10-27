@@ -10,7 +10,7 @@
 
 **Spec:** docs/superpowers/specs/2026-10-25-shipping-checkout-design.md
 
-Estado: pendiente de revision del plan por el usuario. Ejecucion directa en carpeta y rama actuales, metodo previamente elegido. No crear worktree ni desplegar.
+Estado: aprobado y ejecutado localmente. Aceptacion externa sandbox pendiente de credenciales. Resultado detallado y decisiones en docs/shipping-checkout-progress.md; los pasos siguientes se conservan como plan original, no como afirmacion de pruebas externas realizadas. Ejecucion directa en carpeta y rama actuales, metodo previamente elegido. No crear worktree ni desplegar.
 
 ## Global Constraints
 

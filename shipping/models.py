@@ -84,7 +84,7 @@ class ShippingQuote(models.Model):
 
     @property
     def amount(self):
-        return Decimal(self.amount_minor) / 100
+        return (Decimal(self.amount_minor) / 100).quantize(Decimal('.01'))
 
 
 class ShippingRateBucket(models.Model):

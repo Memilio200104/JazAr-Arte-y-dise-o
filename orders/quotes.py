@@ -25,10 +25,10 @@ def build_quote(customer, rows, address_id, notes):
         if not isinstance(details,str) or len(details)>300:
             raise ValidationError('Los detalles de cada pieza admiten hasta 300 caracteres.')
         p=eligible_products().filter(pk=pid).first()
-        if p is None or p.currency!='MXN' or p.technique_key=='3d' or p.stock is None or p.stock<quantity:
+        if p is None or p.currency!='MXN' or p.technique_key=='3d' or p.available_stock is None or p.available_stock<quantity:
             raise ValidationError('Una pieza o cantidad no está disponible. Revisa tu carrito.')
         seen.add(pid)
-        lines.append(dict(id=pid,quantity=quantity,details=details.strip(),sku=p.sku,name=p.name,unit_price=str(p.price),stock=p.stock))
+        lines.append(dict(id=pid,quantity=quantity,details=details.strip(),sku=p.sku,name=p.name,unit_price=str(p.price),stock=p.available_stock))
         subtotal+=p.price*quantity
     if subtotal>Decimal('9999999999.99'):
         raise ValidationError('El importe supera el límite permitido.')

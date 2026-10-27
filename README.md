@@ -42,11 +42,26 @@ La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se 
 - Gmail real y notificaciones operativas quedan para el Modulo 3. Mantener `CONTACT_LOCAL_MODE=1` durante estas pruebas: el formulario no envia correos reales y lo informa.
 - Operacion reportada como probada por el usuario; no equivale a una validacion adicional del servidor realizada por Codex.
 - Los productos fijos abren una ficha propia y se agregan a una seleccion local en `/carrito/`. Continuar permite crear una solicitud real desde `/pedido/solicitud/`, con cuenta, direccion y resumen confirmado. No reserva stock ni cobra.
-- Registro, ingreso por correo, recuperacion, perfil, direcciones y solicitudes ya tienen backend. Jazmin aprueba el diseno desde Django Admin; el cliente consulta `/cuenta/pedidos/`. No hay Stripe ni webhooks: incluso aprobado, el pago sigue inactivo hasta integrar envio y pasarela.
+- Registro, ingreso por correo, recuperacion, perfil, direcciones y solicitudes ya tienen backend. Jazmin aprueba desde Django Admin; el cliente consulta `/cuenta/pedidos/`. Los pedidos aprobados abren envio y pago: cotizacion Envia sandbox, reserva de stock y Stripe Checkout alojado en modo pruebas. Se requieren credenciales para probar la conexion externa; no hay cobros reales habilitados.
 - `/tienda/revision/` permite revisar todas las pantallas y ejemplos de estados solo con DEBUG=True; devuelve 404 en produccion.
 - Precios visibles no activan compras. Impresion 3D y excepciones marcadas en el PDF se cotizan.
 - Disenos sobre prendas negras: DTF. Los modelos multicolor indican la regla segun el color elegido.
-- Modulo 2 pendiente de especificacion de variantes, pedidos, envio y pagos en pruebas. No activar cobros reales por defecto.
+- El Modulo 2 aun requiere aceptacion integral con cuentas sandbox, completar empaques del catalogo y cerrar operacion de guias/cancelaciones antes de produccion. No activar cobros reales.
+
+## Envios y pagos locales
+
+Ver [operacion de envio y Checkout](docs/shipping-checkout-progress.md). Ejecutar `python manage.py migrate` y `python manage.py seed_shipping_profiles --apply` tras respaldar la base. Este comando conserva ediciones y solo asigna los SKU identificados; cajas y pesos siguen siendo provisionales.
+
+En `.env`, configurar `ENVIA_TOKEN` del sandbox, `STRIPE_SECRET_KEY` de pruebas y `STRIPE_WEBHOOK_SECRET`. No compartir claves por chat ni versionarlas. `PAYMENT_ORIGIN=http://127.0.0.1:8000` permite el retorno local. Sin credenciales se muestran errores recuperables, no pagos simulados exitosos.
+
+Con Stripe CLI instalado y autenticado en pruebas:
+
+```powershell
+stripe listen --events checkout.session.completed,checkout.session.expired --forward-to http://127.0.0.1:8000/pagos/stripe/webhook/
+python manage.py reconcile_payments --limit 100
+```
+
+El primer comando muestra el secreto de firma de ese listener; configurarlo localmente en `.env` y reiniciar Django. La conciliacion se ejecuta manualmente en local; el operador debera programarla periodicamente al preparar produccion. El retorno desde Stripe no acredita por si solo un pago.
 
 ## Configuracion y persistencia
 

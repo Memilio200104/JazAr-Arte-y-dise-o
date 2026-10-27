@@ -52,7 +52,7 @@ const fixture=JSON.parse(seed.stdout.trim().split(/\r?\n/).at(-1));
   await page.getByRole('button',{name:'Solicitar revisión'}).click();await page.waitForURL(/\/pedido\/[a-f0-9-]+\/$/);
   const detail=page.url();
   assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('jazar.cart.v1') || '[]')),[]);
-  assert.equal(await page.getByRole('button',{name:'Pago no disponible'}).isDisabled(),true);
+  assert.equal(await page.getByRole('button',{name:'Esperando aprobación'}).isDisabled(),true);
   const admin=await browser.newPage({viewport:{width:1440,height:900}});
   await admin.goto(root+'/admin/login/');await admin.locator('#id_username').fill(fixture.staff);await admin.locator('#id_password').fill(password);await admin.locator('input[type=submit]').click();
   await admin.goto(root+'/admin/orders/order/');
@@ -60,7 +60,7 @@ const fixture=JSON.parse(seed.stdout.trim().split(/\r?\n/).at(-1));
   await admin.getByLabel('Diseño revisado y aprobado por Jazmin').check();
   await admin.getByRole('button',{name:'Guardar revisión'}).click();
   await page.reload();await page.getByRole('heading',{name:'Tu diseño está aprobado.'}).waitFor();
-  assert.equal(await page.getByRole('button',{name:'Pago no disponible'}).isDisabled(),true);
+  assert.equal(await page.getByRole('link',{name:'Envío y pago',exact:false}).isVisible(),true);
   for(const width of [320,390,844,1440,1920]) {
    await page.setViewportSize({width,height:900});
    for(const path of [detail,root+'/cuenta/pedidos/',root+'/pedido/solicitud/']) {
@@ -86,6 +86,6 @@ const fixture=JSON.parse(seed.stdout.trim().split(/\r?\n/).at(-1));
   assert.equal(await noJSPage.locator('main noscript p').isVisible(),true);
   await noJS.close();
   assert.deepEqual(errors,[]);
-  console.log('PASS orders: request, snapshot, staff approval/revocation, disabled payment, 5 widths, concurrent cart preservation');
+  console.log('PASS orders: request, snapshot, staff approval/revocation, payment requires approval, 5 widths, concurrent cart preservation');
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "accounts.apps.AccountsConfig",
     "orders.apps.OrdersConfig",
     "shipping.apps.ShippingConfig",
+    "payments.apps.PaymentsConfig",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -88,6 +89,9 @@ CONTACT_RATE_LIMIT = 5
 CONTACT_RATE_WINDOW = 600
 CONTACT_CACHE_DIR = BASE_DIR / "runtime" / "cache"
 ENVIA_TOKEN = os.getenv('ENVIA_TOKEN', '')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', '')
+PAYMENT_ORIGIN = os.getenv('PAYMENT_ORIGIN', ACCOUNT_ORIGIN)
 ENVIA_CARRIERS = [value.strip() for value in os.getenv('ENVIA_CARRIERS', 'dhl,fedex,estafeta').split(',') if value.strip()]
 SHIPPING_ORIGIN = {
     'name': os.getenv('SHIPPING_ORIGIN_NAME', 'JazAr Arte y Diseno'),

@@ -34,6 +34,10 @@ class Order(models.Model):
     def __str__(self):
         return str(self.public_id)
 
+    @property
+    def latest_payment(self):
+        return self.payment_attempts.order_by('-created_at').first()
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')

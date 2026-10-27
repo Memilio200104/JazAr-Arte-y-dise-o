@@ -30,6 +30,8 @@ def review_order(actor,order_id,expected_version,target_status,note):
     if target_status==Order.Status.CHANGES and not note:
         raise ValidationError('Describe los cambios que necesita el diseño.')
     order=Order.objects.get(pk=order_id)
+    if target_status != order.review_status and order.payment_attempts.filter(state__in=('creating','open','paid','reconciliation_required')).exists():
+        raise ValidationError('Primero concilia o expira el intento de pago desde administracion. Un pedido pagado no puede volver a revision.')
     if order.version!=expected_version:
         raise ReviewConflict('Otra revisión cambió este pedido. Recarga el pedido antes de guardar.')
     if order.review_status==target_status and order.review_note==note:

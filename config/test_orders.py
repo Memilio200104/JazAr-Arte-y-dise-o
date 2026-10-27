@@ -1,4 +1,6 @@
 """File-backed SQLite test database for concurrency verification only."""
 from .test_accounts_browser import *
+from copy import deepcopy
 
-DATABASES['default']['TEST']={'NAME':BASE_DIR / 'runtime' / 'orders-concurrency-test.sqlite3'}
+DATABASES = deepcopy(DATABASES)
+DATABASES['default'].setdefault('TEST', {})['NAME'] = BASE_DIR / 'runtime' / 'orders-concurrency-test.sqlite3'

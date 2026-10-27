@@ -15,6 +15,7 @@ def healthz(request):
 
 
 urlpatterns = [
+    path('', include('payments.urls')),
     path('admin/', admin.site.urls),
     path("", include("website.urls")),
     path("healthz/", healthz, name="healthz"),

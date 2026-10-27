@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from django.core.validators import MinValueValidator, RegexValidator
-from django.db import models
+from django.db import models, transaction
 from django.core.exceptions import ValidationError
 from django.templatetags.static import static
 from .images import process_fields, validate_image
@@ -36,6 +36,7 @@ class Product(models.Model):
                                 validators=[MinValueValidator(Decimal("0.00"))])
     currency = models.CharField(max_length=3, default="MXN", choices=[("MXN", "Peso mexicano")])
     stock = models.PositiveIntegerField(null=True, blank=True)
+    reserved_stock = models.PositiveIntegerField(default=0, editable=False)
     sale_mode = models.CharField(max_length=8, choices=[('quote', 'Cotización'), ('fixed', 'Precio fijo')], default='quote')
     price_note = models.CharField(max_length=250, blank=True)
     catalog_page = models.PositiveSmallIntegerField(null=True, blank=True)
@@ -48,6 +49,7 @@ class Product(models.Model):
     class Meta:
         ordering = ["sort_order", "pk"]
         constraints = [
+            models.CheckConstraint(condition=models.Q(stock__isnull=False, stock__gte=models.F('reserved_stock')) | models.Q(stock__isnull=True, reserved_stock=0), name='product_reservation_within_stock'),
             models.CheckConstraint(condition=models.Q(price__gte=0) | models.Q(price__isnull=True), name="product_price_nonnegative"),
         ]
 
@@ -56,6 +58,9 @@ class Product(models.Model):
 
     def clean(self):
         super().clean()
+        reserved = type(self).objects.filter(pk=self.pk).values_list('reserved_stock', flat=True).first() if self.pk else self.reserved_stock
+        if reserved and (self.stock is None or self.stock < reserved):
+            raise ValidationError({'stock': 'No puedes reducir existencias por debajo de las unidades reservadas.'})
         if self.is_active and self.photo and not self.image_alt.strip():
             raise ValidationError({'image_alt': 'Describe la foto antes de publicar.'})
         if self.sale_mode == 'fixed' and self.price is None:
@@ -63,10 +68,37 @@ class Product(models.Model):
         if self.sale_mode == 'fixed' and self.technique_key == '3d':
             raise ValidationError({'sale_mode': 'Las impresiones 3D personalizadas requieren cotización.'})
 
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+        if 'stock' in field_names:
+            instance._loaded_stock = instance.stock
+        return instance
+
+    @transaction.atomic
     def save(self, *args, **kwargs):
         self.clean()
         process_fields(self, ['photo'])
+        if self.pk and not kwargs.get('force_insert'):
+            fields = kwargs.get('update_fields')
+            write_stock = fields is None or 'stock' in fields
+            if write_stock and 'stock' in self.__dict__:
+                original = getattr(self, '_loaded_stock', self.stock)
+                if self.stock != original:
+                    if not type(self).objects.filter(pk=self.pk, stock=original).update(stock=self.stock):
+                        raise ValidationError({'stock': 'Las existencias cambiaron. Recarga antes de guardar.'})
+            kwargs['update_fields'] = (set(fields) if fields else {f.name for f in self._meta.concrete_fields if not f.primary_key and f.attname in self.__dict__}) - {'reserved_stock','stock'}
         super().save(*args, **kwargs)
+        self._loaded_stock = self.stock
+
+    def refresh_from_db(self, using=None, fields=None, from_queryset=None):
+        super().refresh_from_db(using=using, fields=fields, from_queryset=from_queryset)
+        if fields is None or 'stock' in fields:
+            self._loaded_stock = self.stock
+
+    @property
+    def available_stock(self):
+        return None if self.stock is None else max(0, self.stock - self.reserved_stock)
 
     @property
     def has_store_detail(self):
