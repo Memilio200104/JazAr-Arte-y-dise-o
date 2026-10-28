@@ -1,5 +1,20 @@
 {% extends 'orders/base.html' %}
 {% block store_content %}<div class="store-heading"><p class="eyebrow">JAZAR / TU CUENTA</p><h1>Tus pedidos</h1></div>
 <a class="text-link" href="{% url 'account' %}">Mis datos</a>
-<div class="order-list">{% for order in orders %}<article class="order-line"><p class="store-note">{{ order.created_at|date:'d/m/Y H:i' }}</p><h2><a href="{% url 'order_detail' order.public_id %}">Pedido {{ order.public_id }}</a></h2><span class="status-chip">{{ order.get_review_status_display }}</span><p>${{ order.subtotal }} MXN · Subtotal de referencia</p></article>{% empty %}<div class="store-empty"><h2>Tu próxima idea empieza aquí.</h2><p>Todavía no has enviado pedidos a revisión.</p><a class="button button-primary" href="{% url 'cart' %}">Ver mi selección</a></div>{% endfor %}</div>
+<div class="order-list">{% for order in orders %}
+<article class="order-line order-overview">
+  <div>
+    <p class="store-note">{{ order.created_at|date:'d/m/Y H:i' }}</p>
+    <h2><a href="{% url 'order_detail' order.public_id %}">Pedido {{ order.public_id }}</a></h2>
+    {% include 'orders/status.html' with progress=order.progress %}
+    <p>{{ order.progress.message }}</p>
+  </div>
+  <div class="order-overview-actions">
+    <span>{{ order.progress.amount_label }}</span>
+    <strong class="order-amount">${{ order.progress.total|floatformat:2 }} MXN</strong>
+    <a class="button button-primary" href="{% url 'order_detail' order.public_id %}">Ver pedido <i data-lucide="arrow-right" aria-hidden="true"></i></a>
+    {% if order.review_status == 'approved' or order.progress.paid %}<a class="text-link" href="{{ order.progress.action_url }}">{{ order.progress.action_label }}</a>{% endif %}
+  </div>
+</article>
+{% empty %}<div class="store-empty"><h2>Tu próxima idea empieza aquí.</h2><p>Todavía no has enviado pedidos a revisión.</p><a class="button button-primary" href="{% url 'cart' %}">Ver mi selección</a></div>{% endfor %}</div>
 {% if orders.has_other_pages %}<nav class="order-pagination" aria-label="Páginas de pedidos">{% if orders.has_previous %}<a href="?page={{ orders.previous_page_number }}">Anterior</a>{% endif %}<span>{{ orders.number }} / {{ orders.paginator.num_pages }}</span>{% if orders.has_next %}<a href="?page={{ orders.next_page_number }}">Siguiente</a>{% endif %}</nav>{% endif %}{% endblock %}

@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.core import signing
 from django.core.exceptions import ValidationError
 from django.db import DatabaseError
+from django.db.models import Prefetch
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods, require_GET
@@ -10,6 +11,8 @@ from accounts.views import customer_required
 from website.store_presenters import store_context
 from .forms import RequestForm
 from .models import Order
+from .presentation import order_progress
+from payments.models import PaymentAttempt
 from .quotes import build_quote, sign_quote, SALT
 from .services import create_order, QuoteChanged, OrderRateLimited
 
@@ -64,7 +67,11 @@ def request_order(request):
 @customer_required
 @require_GET
 def order_list(request):
-    orders=Paginator(request.customer.orders.all(),20).get_page(request.GET.get('page'))
+    queryset = request.customer.orders.prefetch_related(Prefetch('payment_attempts',
+        queryset=PaymentAttempt.objects.order_by('-created_at', '-pk'), to_attr='recent_payments'))
+    orders=Paginator(queryset,20).get_page(request.GET.get('page'))
+    for order in orders:
+        order.progress = order_progress(order)
     return render(request,'orders/list.html',{**store_context(),'orders':orders,'page_title':'Tus pedidos'})
 
 
@@ -78,4 +85,4 @@ def order_detail(request,public_id,payment=False):
         request.session.pop('submitted_order')
         submitted=[{'id':r['product_id'],'quantity':r['quantity']} for r in pending['rows']]
     return render(request,'orders/detail.html',{**store_context(),'order':order,'payment':payment,
-        'submitted_cart':submitted,'page_title':'Tu pedido'})
+        'submitted_cart':submitted,'page_title':'Tu pedido','progress':order_progress(order)})

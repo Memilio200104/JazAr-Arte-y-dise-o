@@ -46,7 +46,7 @@ La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se 
 - `/tienda/revision/` permite revisar todas las pantallas y ejemplos de estados solo con DEBUG=True; devuelve 404 en produccion.
 - Precios visibles no activan compras. Impresion 3D y excepciones marcadas en el PDF se cotizan.
 - Disenos sobre prendas negras: DTF. Los modelos multicolor indican la regla segun el color elegido.
-- El Modulo 2 aun requiere aceptacion integral con cuentas sandbox, completar empaques del catalogo y cerrar operacion de guias/cancelaciones antes de produccion. No activar cobros reales.
+- El Modulo 2 aun requiere aceptacion integral con cuentas sandbox, validacion fisica de los empaques provisionales y cerrar operacion de guias/cancelaciones antes de produccion. Los 79 productos de precio fijo tienen empaque asignado; Mis pedidos distingue revision, aprobacion y estado de pago. No activar cobros reales.
 
 ## Envios y pagos locales
 

@@ -44,7 +44,30 @@ const fixture=JSON.parse(setup.stdout.trim().split(/\r?\n/).at(-1));
   assert.equal(await page.getByText('Pago confirmado',{exact:true}).count(),0);
   const noJS=await browser.newContext({javaScriptEnabled:false,storageState:await context.storageState()});
   const plain=await noJS.newPage();await plain.goto(url);assert.equal(await plain.getByRole('button',{name:'Calcular envio'}).isVisible(),true);
+  // Paid fixture belongs only to the isolated browser database; no provider charge.
+  const paid=spawnSync('.venv/Scripts/python.exe',['manage.py','shell','--settings=config.test_accounts_browser','-c',`
+from payments.models import PaymentAttempt
+from shipping.models import ShippingQuote
+from django.utils import timezone
+q=ShippingQuote.objects.get(pk=${fixture.quote})
+PaymentAttempt.objects.create(order=q.order,quote=q,approved_version=q.order.version,total_minor=68520,state='paid',expires_at=timezone.now())
+`],{encoding:'utf8'});
+  assert.equal(paid.status,0,paid.stderr);
+  for(const width of [320,390,844,1440,1920]) {
+   await page.setViewportSize({width,height:900});
+   for(const path of ['/cuenta/pedidos/','/pedido/'+fixture.order+'/']) {
+    await page.goto('http://127.0.0.1:8011'+path);
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,'paid '+path+' '+width);
+    assert.equal(await page.getByText('Pago confirmado',{exact:true}).first().isVisible(),true);
+    assert.equal(await page.getByText('$685.20 MXN',{exact:true}).isVisible(),true);
+    assert.equal(await page.getByRole('link',{name:'Ver pago',exact:false}).isVisible(),true);
+    assert.equal(await page.getByRole('link',{name:'Enviar diseño por WhatsApp',exact:false}).count(),0);
+    if([390,1440].includes(width)) await page.screenshot({path:'artifacts/paid-'+(path.includes('cuenta')?'list':'detail')+'-'+width+'.png',fullPage:true});
+   }
+  }
+  await plain.goto('http://127.0.0.1:8011/cuenta/pedidos/');
+  assert.equal(await plain.getByRole('link',{name:'Ver pago',exact:false}).isVisible(),true);
   await noJS.close();assert.deepEqual(errors,[]);
-  console.log('PASS checkout: private summary, five widths, missing credentials honest error, no JS');
+  console.log('PASS checkout: private summary, missing credentials error, paid list/detail at five widths, no JS');
  }finally{await browser.close()}
 })().catch(e=>{console.error(e);process.exit(1)});

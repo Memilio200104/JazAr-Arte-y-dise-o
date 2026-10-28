@@ -59,8 +59,8 @@ const fixture=JSON.parse(seed.stdout.trim().split(/\r?\n/).at(-1));
   await admin.getByRole('link',{name:detail.split('/').at(-2),exact:true}).click();
   await admin.getByLabel('Diseño revisado y aprobado por Jazmin').check();
   await admin.getByRole('button',{name:'Guardar revisión'}).click();
-  await page.reload();await page.getByRole('heading',{name:'Tu diseño está aprobado.'}).waitFor();
-  assert.equal(await page.getByRole('link',{name:'Envío y pago',exact:false}).isVisible(),true);
+  await page.reload();await page.getByRole('heading',{name:'Diseño aprobado'}).waitFor();
+  assert.equal(await page.getByRole('link',{name:'Elegir envío y pagar',exact:false}).isVisible(),true);
   for(const width of [320,390,844,1440,1920]) {
    await page.setViewportSize({width,height:900});
    for(const path of [detail,root+'/cuenta/pedidos/',root+'/pedido/solicitud/']) {
@@ -81,7 +81,7 @@ const fixture=JSON.parse(seed.stdout.trim().split(/\r?\n/).at(-1));
   assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('jazar.cart.v1'))[0].quantity),3);
   const noJS=await browser.newContext({javaScriptEnabled:false,storageState:await page.context().storageState()});
   const noJSPage=await noJS.newPage();await noJSPage.goto(detail);
-  assert.equal(await noJSPage.getByRole('heading',{name:'Un ajuste para seguir.'}).isVisible(),true);
+  assert.equal(await noJSPage.getByRole('heading',{name:'Cambios solicitados'}).isVisible(),true);
   await noJSPage.goto(root+'/pedido/solicitud/');
   assert.equal(await noJSPage.locator('main noscript p').isVisible(),true);
   await noJS.close();

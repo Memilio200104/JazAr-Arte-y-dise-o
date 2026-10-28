@@ -11,3 +11,7 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost']
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
+# Browser fixtures must stay isolated even after local provider keys are configured.
+ENVIA_TOKEN = ''
+STRIPE_SECRET_KEY = ''
+STRIPE_WEBHOOK_SECRET = ''
