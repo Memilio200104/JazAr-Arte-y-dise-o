@@ -26,6 +26,7 @@ class CheckoutTests(TestCase):
     def test_checkout_idempotency_and_confirmation(self, rates, create):
         result = start_checkout(self.customer, self.order.pk, self.quote.pk)
         self.assertEqual(result.attempt.total_minor, 15000)
+        self.assertEqual(result.attempt.payload['shipping_options'][0]['shipping_rate_data']['display_name'], 'DHL · Terrestre')
         again = start_checkout(self.customer,self.order.pk,self.quote.pk)
         self.assertEqual(again.attempt.pk, result.attempt.pk)
         self.assertEqual(self.order.payment_attempts.count(),1)

@@ -18,11 +18,11 @@
 {% else %}<h2 class="order-section-title">Opciones de env&iacute;o</h2>
 <form method="post">{% csrf_token %}<button class="button button-outline" name="action" value="quote">Calcular envio <i data-lucide="truck" aria-hidden="true"></i></button></form>
 {% if rates %}<form method="post" class="shipping-options">{% csrf_token %}<fieldset><legend>Selecciona tu servicio</legend>
-{% for rate in rates %}<label class="shipping-option"><input type="radio" name="quote_id" value="{{ rate.pk }}" required><span><strong>{{ rate.carrier|title }}</strong><br>{{ rate.service }}</span><strong>${{ rate.amount }} MXN</strong></label>{% endfor %}
+{% for rate in rates %}<label class="shipping-option"><input type="radio" name="quote_id" value="{{ rate.pk }}" required><span><strong>{{ rate.carrier|title }}</strong><br>{{ rate.service_label }}</span><strong>${{ rate.amount }} MXN</strong></label>{% endfor %}
 </fieldset><button class="button button-primary" name="action" value="select">Revisar total <i data-lucide="arrow-right" aria-hidden="true"></i></button></form>{% endif %}
 {% endif %}</section>
 <aside class="store-summary"><h2>Resumen</h2><div class="summary-line"><span>Productos</span><strong>${{ order.subtotal }} MXN</strong></div>
-{% if selected and not active_payment and attempt.state != 'paid' %}<div class="summary-line"><span>{{ selected.carrier|title }} / {{ selected.service }}</span><strong>${{ selected.amount }} MXN</strong></div><div class="summary-line"><span>Total</span><strong>${{ total }} MXN</strong></div>
+{% if selected and not active_payment and attempt.state != 'paid' %}<div class="summary-line"><span>{{ selected.carrier|title }} / {{ selected.service_label }}</span><strong>${{ selected.amount }} MXN</strong></div><div class="summary-line"><span>Total</span><strong>${{ total }} MXN</strong></div>
 <form method="post">{% csrf_token %}<input type="hidden" name="quote_id" value="{{ selected.pk }}"><button class="button button-primary" name="action" value="pay">Ir al pago <i data-lucide="arrow-up-right" aria-hidden="true"></i></button></form><p class="store-note">Continuar&aacute;s en Stripe para realizar tu pago.</p>
 {% elif attempt and active_payment or attempt.state == 'paid' %}<div class="summary-line"><span>Env&iacute;o</span><strong>${{ attempt.quote.amount }} MXN</strong></div><div class="summary-line"><span>Total</span><strong>${{ attempt_total }} MXN</strong></div>
 {% else %}<div class="summary-line"><span>Env&iacute;o</span><span>Pendiente de seleccionar</span></div>{% endif %}

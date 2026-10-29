@@ -37,7 +37,7 @@ def _prepare_payload(attempt_id):
             'product_data': {'name': 'Pedido JazAr ' + str(attempt.order.public_id)}}, 'quantity':1}],
         shipping_options=[{'shipping_rate_data': {'type':'fixed_amount',
             'fixed_amount': {'amount':attempt.quote.amount_minor,'currency':'mxn'},
-            'display_name': attempt.quote.carrier + ' ' + attempt.quote.service}}])
+            'display_name': attempt.quote.carrier.upper() + ' · ' + attempt.quote.service_label}}])
     PaymentAttempt.objects.filter(pk=attempt.pk,payload={}).update(payload=payload)
     attempt.refresh_from_db()
     return attempt

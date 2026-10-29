@@ -83,6 +83,12 @@ class ShippingQuote(models.Model):
     expires_at = models.DateTimeField()
 
     @property
+    def service_label(self):
+        labels = {'ground': 'Terrestre', 'ground_od': 'Terrestre · OD',
+                  'express': 'Exprés', 'local': 'Local'}
+        return labels.get(self.service.lower(), self.service.replace('_', ' '))
+
+    @property
     def amount(self):
         return (Decimal(self.amount_minor) / 100).quantize(Decimal('.01'))
 

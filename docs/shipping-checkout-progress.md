@@ -91,3 +91,5 @@ Referencias: https://docs.envia.com/docs/core-workflow ; https://docs.envia.com/
 - Regresiones observadas RED antes de corregir y GREEN despues; 58 pruebas shipping/payments/orders PASS. .env permanece excluido de Git; no se registraron claves en documentacion ni comandos de salida.
 
 Esta comprobacion sustituye la ausencia total de credenciales anotada en los cortes anteriores; siguen pendientes los pasos restantes de aceptacion, validacion fisica de empaques y operacion.
+
+Continuacion del 28 de octubre: etiquetas de servicios en espanol, indicadores de carga y secreto de webhook comprobado localmente. Ver [estado de carga y cierre](checkout-loading-status.md). La firma local pasa; la entrega Stripe CLI y el pago integral siguen pendientes.
