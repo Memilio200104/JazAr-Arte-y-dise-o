@@ -30,7 +30,8 @@ def _prepare_payload(attempt_id):
     path = f'/pedido/{attempt.order.public_id}/pago/'
     # Stripe requires at least 30 minutes when it receives the request.
     expires = int(timezone.now().timestamp()) + 1860
-    payload = dict(mode='payment', payment_method_types=['card'], locale='es',
+    # Endive filters Dashboard-enabled methods through this allowlist.
+    payload = dict(mode='payment', allowed_payment_method_types=['card'], locale='es',
         client_reference_id=str(attempt.public_id), expires_at=expires,
         success_url=origin+path+'?retorno=1', cancel_url=origin+path,
         line_items=[{'price_data': {'currency':'mxn', 'unit_amount': int(attempt.order.subtotal*100),
