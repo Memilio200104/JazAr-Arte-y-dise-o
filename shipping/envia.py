@@ -51,7 +51,8 @@ def quote_rates(origin, destination, packages):
             shipment={'type': 1, 'carrier': carrier}, settings={'currency': 'MXN'})
         request = Request('https://api-test.envia.com/ship/rate/',
             data=json.dumps(payload).encode(), headers={'Authorization': f'Bearer {settings.ENVIA_TOKEN}',
-            'Content-Type': 'application/json'}, method='POST')
+            'Content-Type': 'application/json',
+            'User-Agent': 'JazAr/1.0 (+shipping integration)'}, method='POST')
         try:
             with urlopen(request, timeout=10) as response:
                 data = response.read(1024 * 1024 + 1)

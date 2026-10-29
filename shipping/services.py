@@ -24,6 +24,9 @@ STATES = dict(zip(('aguascalientes,baja california,baja california sur,campeche,
 
 def normalize_address(address):
     name = ''.join(c for c in unicodedata.normalize('NFD', address.get('state', '').lower()) if not unicodedata.combining(c))
+    name = ' '.join(name.strip().rstrip('.').split())
+    name = {'mex': 'estado de mexico', 'mexico': 'estado de mexico',
+            'edomex': 'estado de mexico', 'em': 'estado de mexico'}.get(name, name)
     state = STATES.get(name)
     if not state or not str(address.get('postcode', '')).isdigit() or len(address['postcode']) != 5:
         raise ValidationError('Revisa el estado y el codigo postal de la direccion de envio.')

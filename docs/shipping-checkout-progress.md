@@ -80,3 +80,14 @@ La continuacion se aplico despues del respaldo runtime/backups/before-catalog-pa
 Pendiente para aceptacion: credenciales y recorrido real de sandbox Envia/Stripe; no se han realizado solicitudes externas con datos de compradores. Falta validacion fisica de empaques, operacion de guias y detalles finales de cancelacion/reembolso. No hay compra de guias, reembolsos automaticos, cobros live, despliegue ni Gmail operativo. El Modulo 2 no se declara listo para produccion.
 
 Referencias: https://docs.envia.com/docs/core-workflow ; https://docs.envia.com/docs/ecommerce-checkout ; https://docs.stripe.com/api/checkout/sessions/create ; https://docs.stripe.com/api/idempotent_requests ; https://docs.stripe.com/webhooks .
+
+## Primera conexion sandbox verificada (28 de octubre)
+
+- ENVIA_TOKEN autentica correctamente en sandbox; se realizo una cotizacion del pedido local aprobado y se recibieron cinco opciones MXN de DHL/Estafeta. No se compro ninguna guia ni se persistio esa cotizacion diagnostica.
+- La llamada con el agente HTTP predeterminado Python-urllib respondia 403; identificacion explicita JazAr/1.0 obtuvo respuesta valida. El adaptador ahora declara ese User-Agent.
+- La direccion guardada tenia estado `Mex.` con acento; se reconocen Mex., Mexico, Edomex y EM como Estado de Mexico, conservando Ciudad de Mexico como CX. No se cambia la direccion guardada.
+- STRIPE_TOKEN contenia una clave privada de pruebas: se traslado localmente a STRIPE_SECRET_KEY. Stripe acepto una consulta de solo lectura a Checkout Sessions. STRIPE_TOKEN_PUBLIC se conserva, pero el Checkout alojado no necesita la clave publica. No se crearon sesiones ni cargos en esta comprobacion.
+- STRIPE_WEBHOOK_SECRET sigue pendiente. Por ello la validacion de pago completo, webhook y stock sigue sin completarse; la presencia de claves no equivale a aceptacion integral.
+- Regresiones observadas RED antes de corregir y GREEN despues; 58 pruebas shipping/payments/orders PASS. .env permanece excluido de Git; no se registraron claves en documentacion ni comandos de salida.
+
+Esta comprobacion sustituye la ausencia total de credenciales anotada en los cortes anteriores; siguen pendientes los pasos restantes de aceptacion, validacion fisica de empaques y operacion.

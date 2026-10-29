@@ -15,6 +15,7 @@ class AdapterTests(SimpleTestCase):
         self.assertEqual(rates[0].amount_minor,18520)
         request=transport.call_args.args[0]
         self.assertEqual(request.full_url,'https://api-test.envia.com/ship/rate/')
+        self.assertEqual(request.get_header('User-agent'), 'JazAr/1.0 (+shipping integration)')
         self.assertEqual(len(json.loads(request.data)['packages']),2)
 
     def test_timeout_and_empty_fail_closed(self):

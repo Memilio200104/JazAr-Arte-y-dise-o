@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from shipping.tests.test_packing import PackingTests
 from shipping.envia import Rate, parse_rates, ShippingUnavailable
-from shipping.services import fetch_order_rates, refresh_selected_quote
+from shipping.services import fetch_order_rates, refresh_selected_quote, normalize_address
 
 ORIGIN = dict(name='Taller', phone='5539754777', street='Aconitos', number='729',
     district='Villa', city='Coacalco', state='EM', country='MX', postalCode='55710')
@@ -45,6 +45,15 @@ class QuoteTests(TestCase):
     def test_pending_rejected_before_api(self):
         self.order.review_status = 'pending'; self.order.save()
         with self.assertRaises(ValidationError): fetch_order_rates(self.customer, self.order.pk)
+
+    def test_mexico_state_aliases_do_not_change_mexico_city(self):
+        address = self.order.shipping_address
+        for name in ['Méx.', 'México', 'Edomex', 'Estado de México', 'EM']:
+            with self.subTest(name=name):
+                self.assertEqual(normalize_address({**address, 'state': name})['state'], 'EM')
+        self.assertEqual(normalize_address({**address, 'state': 'Ciudad de México'})['state'], 'CX')
+        with self.assertRaises(ValidationError):
+            normalize_address({**address, 'state': 'Estado inexistente'})
 
     def test_invalid_provider_responses(self):
         for data in ({}, {'data': 'bad'}, {'data': [{'carrier':'dhl','service':'ground','currency':'USD','totalPrice':'1'}]},
