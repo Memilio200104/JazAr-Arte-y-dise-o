@@ -1,20 +1,22 @@
 # Editar el contenido de JazAr
 
+Referencia tecnica actualizada para el MVP el 30 de octubre de 2026. Para la operacion cotidiana consultar el [manual de Jazmin](manual/jazmin.md).
+
 ## Inicio
 
-Activar el entorno y ejecutar `python manage.py migrate`. En esta maquina existe `jazar_admin`, creado sin contrasena utilizable: definirla con `python manage.py changepassword jazar_admin`. En otra maquina crear su propio administrador con `python manage.py createsuperuser`. Las contrasenas se introducen de forma interactiva, nunca se guardan en Git.
+Activar el entorno y ejecutar `python manage.py migrate`. Usar una cuenta staff autorizada existente o crear su propio administrador con `python manage.py createsuperuser` en una instalacion nueva. Cambiar una contrasena con `python manage.py changepassword NOMBRE_DE_USUARIO`. Las contrasenas se introducen de forma interactiva, nunca se guardan en Git.
 
 Abrir http://127.0.0.1:8000/admin/ con runserver activo. Para editores, crear usuarios staff y conceder solo permisos de ver, agregar y cambiar Product, Package y SiteContent. No conceder gestion de usuarios ni superusuario a un editor habitual.
 
 ## Productos y paquetes
 
-Los nuevos registros son borradores. Completar contenido, seleccionar tecnica/categoria, asignar SKU y subir foto. Agregar descripcion alternativa; desmarcar Concepto para fotos reales. Activar is_active para publicar. Orden menor aparece primero. El precio se muestra publicamente; precio y stock no habilitan compras. Seleccionar Precio fijo o Cotizacion explicitamente. Las impresiones 3D personalizadas requieren cotizacion; los disenos sobre prendas negras se clasifican en DTF.
+Los nuevos registros son borradores. Completar contenido, seleccionar tecnica/categoria, asignar SKU y subir foto. Agregar descripcion alternativa; desmarcar Concepto para fotos reales. Activar is_active para publicar. Orden menor aparece primero. Seleccionar Precio fijo o Cotizacion explicitamente: los productos reales y activos de precio fijo abren la ficha de compra del Modulo 2. Para completar el pago requieren disponibilidad, empaque asignado, cuenta, direccion, aprobacion de diseno y cotizacion de envio. Las impresiones 3D personalizadas requieren cotizacion; los disenos sobre prendas negras se clasifican en DTF.
 
 Los seis conceptos anteriores se conservan ocultos. El catalogo actual se carga con `import_client_catalog`, no con `seed_demo`. Los paquetes se cargan una sola vez mediante migracion y luego se editan en el panel. Inclusiones y textos no admiten HTML.
 
 ## Portada
 
-En Contenido de la portada agregar el unico registro o editarlo si existe. Los valores iniciales reproducen los textos anteriores. Se pueden sustituir hero y presentacion; sin fotos cargadas se conservan los activos de demostracion. Guardar cambia inmediatamente los textos publicos. No hay vista previa ni historial editorial de portada; Django Admin registra las operaciones.
+En Contenido de la portada agregar el unico registro o editarlo si existe. Los valores iniciales reproducen los textos anteriores. Se pueden sustituir hero y presentacion; sin fotos cargadas se conservan los activos incluidos en el proyecto. Conservar el fondo del hero aprobado salvo decision expresa de cambiarlo. Guardar cambia inmediatamente los textos publicos. No hay vista previa ni historial editorial de portada; Django Admin registra las operaciones.
 
 ## Imagenes
 

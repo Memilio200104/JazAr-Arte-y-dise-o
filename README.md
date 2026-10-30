@@ -1,6 +1,8 @@
 # JazAr Arte y Diseño
 
-Sitio Django de presentacion, catalogo editable y frontend de tienda. Estado actualizado: 20 de octubre de 2026. El catalogo contiene 85 fichas con fotografias del cliente: 79 de precio fijo y 6 por cotizacion. El hero conserva el fondo original por peticion expresa del usuario.
+MVP funcional de presentacion, catalogo editable y e-commerce sobre Django. Edicion 1.0, actualizada el 30 de octubre de 2026: cuentas, pedidos, revision de diseno, envio, Stripe Checkout, cancelaciones y seguimiento. Integraciones externas en pruebas; sin despliegue ni cobros reales habilitados. El catalogo inicial contiene 85 fichas con fotografias del cliente: 79 de precio fijo y 6 por cotizacion. El hero conserva el fondo original por peticion expresa del usuario.
+
+**[Manual del MVP: compradores, Jazmin y operacion tecnica](docs/manual/README.md).** Documento editable y versionado para ampliarlo en los siguientes modulos. Consultar tambien [alcance y estimaciones de los modulos 3 y 3.5](docs/roadmap-modulos-3-y-3-5.md).
 
 ## Arranque local
 
@@ -27,13 +29,13 @@ El importador conserva ediciones de productos existentes. `--update-site` reempl
 
 ## Administracion
 
-El panel privado esta en `/admin/`. En esta maquina se creo `jazar_admin` sin contrasena utilizable; el propietario debe definirla en su terminal:
+El panel privado esta en `/admin/`. Usar una cuenta staff autorizada. Para una instalacion nueva, crear el administrador en su terminal:
 
 ```powershell
-python manage.py changepassword jazar_admin
+python manage.py createsuperuser
 ```
 
-La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se crea una cuenta propia. Ver [edicion de contenido](docs/editar-contenido.md).
+Las cuentas y sus correos solo viven en la base de datos, no en Git. Para cambiar una contrasena existente usar `python manage.py changepassword NOMBRE_DE_USUARIO`. Ver [guia de Jazmin](docs/manual/jazmin.md) y [edicion de contenido](docs/editar-contenido.md).
 
 ## Alcance acordado
 
@@ -44,7 +46,7 @@ La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se 
 - Los productos fijos abren una ficha propia y se agregan a una seleccion local en `/carrito/`. Continuar permite crear una solicitud real desde `/pedido/solicitud/`, con cuenta, direccion y resumen confirmado. No reserva stock ni cobra.
 - Registro, ingreso por correo, recuperacion, perfil, direcciones y solicitudes ya tienen backend. Jazmin aprueba desde Django Admin; el cliente consulta `/cuenta/pedidos/`. Los pedidos aprobados abren envio y pago: cotizacion Envia sandbox, reserva de stock y Stripe Checkout alojado en modo pruebas. Se requieren credenciales para probar la conexion externa; no hay cobros reales habilitados.
 - `/tienda/revision/` permite revisar todas las pantallas y ejemplos de estados solo con DEBUG=True; devuelve 404 en produccion.
-- Precios visibles no activan compras. Impresion 3D y excepciones marcadas en el PDF se cotizan.
+- La modalidad Precio fijo habilita la ficha de compra de un producto real y activo; el pago requiere cuenta, revision aprobada, disponibilidad y envio. Impresion 3D y excepciones marcadas en el PDF se cotizan.
 - Disenos sobre prendas negras: DTF. Los modelos multicolor indican la regla segun el color elegido.
 - El Modulo 2 tiene cotizacion, pago, cancelacion con devolucion completa y seguimiento manual de guias implementados. Se verificaron cobros y reembolso con Stripe sandbox. Los 79 productos de precio fijo tienen empaque asignado. Antes de ventas reales faltan validar fisicamente esos empaques y preparar la activacion operativa; las claves live siguen deshabilitadas. Ver [cancelaciones y seguimiento](docs/cancellations-tracking.md).
 
@@ -103,4 +105,4 @@ El motor Docker no estaba disponible para la ultima comprobacion del agente. El 
 - [Infraestructura](docs/fase-1-infraestructura.md): referencia historica y pasos de servidor; no es estado actual.
 - `AGENTS.md`: Superpowers, ui-ux-pro-max y web-design-guidelines, aplicados segun la etapa. Los antiguos plugins UI UX Designer y Web Design fueron sustituidos; no se presentan como disponibles.
 
-Rama de trabajo: `codex/pulido-visual`. `main` y `master` conservan la base anterior; un push de la rama no despliega ni fusiona automaticamente esos cambios.
+Rama de referencia del MVP: `main`, con la version funcional integrada desde `codex/pulido-visual`. `master` conserva la base historica. Un push no despliega automaticamente el sitio. El manual vigente esta en `docs/manual/`; las bitacoras anteriores conservan el estado de sus respectivas fechas.
