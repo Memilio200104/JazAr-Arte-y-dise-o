@@ -40,7 +40,7 @@
     });
     document.querySelectorAll('[data-subtotal]').forEach(el => { el.textContent = money(subtotalMinor(items, products)); });
     document.querySelectorAll('[data-cart-empty]').forEach(el => { el.hidden = !!items.length; });
-    document.querySelectorAll('[data-cart-continue]').forEach(el => { el.hidden = !items.length; });
+    document.querySelectorAll('[data-cart-continue]').forEach(el => { el.hidden = !items.length; el.href = '/pedido/solicitud/'; });
     document.querySelectorAll('[data-cart-items]').forEach(container => {
       container.replaceChildren();
       items.forEach(row => {
@@ -77,7 +77,9 @@
     });
     window.lucide?.createIcons();
   }
-  read(); save(); render();
+  read();
+  if (!document.querySelector('meta[name="jazar-order-page"]')) save();
+  render();
   document.querySelectorAll('[data-add-product]').forEach(button => button.addEventListener('click', () => {
     const quantity = Number(document.getElementById('product-quantity').value);
     if (!Number.isSafeInteger(quantity) || quantity < 1 || quantity > 99) { announce('Elige una cantidad entre 1 y 99.'); return; }

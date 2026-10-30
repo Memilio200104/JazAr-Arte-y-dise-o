@@ -40,6 +40,12 @@
   - **Web Design:** Diseñen los modelos de base de datos del catálogo (Django Models) pensando en que eventualmente serán transaccionales (consideren incluir campos como precio o SKU desde ahora, aunque no se puedan comprar aún).
 
 ## 6. Skills obligatorias del proyecto
+### Roadmap vigente autorizado el 30 de octubre de 2026
+- **Modulo 3:** panel privado propio de Jazmin dentro del sitio para gestionar pedidos, aprobaciones, productos, existencias, usuarios y guias, reutilizando los servicios y permisos existentes. Django admin permanece disponible como respaldo.
+- **Modulo 3.5:** todo lo relacionado con Gmail: SMTP nativo de Django, formulario de contacto, correos de verificacion/recuperacion de cuenta y notificaciones a clientes y Jazmin (nuevos pedidos, aprobaciones, cambios y estados).
+- Implementar primero el panel y despues Gmail. El panel debe funcionar sin correo real configurado. Esta division prevalece sobre documentos historicos que agrupaban ambos alcances en Modulo 3; no autoriza despliegue ni cobros reales.
+- Referencia vigente: `docs/roadmap-modulos-3-y-3-5.md`.
+
 ### Actualizacion autorizada el 13 de octubre de 2026
 - En todas las sesiones de este proyecto usar **Superpowers**, **ui-ux-pro-max** y **web-design-guidelines** segun la etapa del trabajo. Leer sus SKILL.md vigentes antes de aplicarlos.
 - **ui-ux-pro-max** (`C:/Users/emili/.codex/skills/ui-ux-pro-max/SKILL.md`) dirige diseno, tipografia, interaccion, accesibilidad y responsividad.

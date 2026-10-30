@@ -19,6 +19,10 @@ INSTALLED_APPS = [
     "django.contrib.admin", "django.contrib.auth", "django.contrib.contenttypes",
     "django.contrib.sessions", "django.contrib.messages", "django.contrib.staticfiles",
     "website.apps.WebsiteConfig",
+    "accounts.apps.AccountsConfig",
+    "orders.apps.OrdersConfig",
+    "shipping.apps.ShippingConfig",
+    "payments.apps.PaymentsConfig",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -54,6 +58,10 @@ AUTH_PASSWORD_VALIDATORS = [
     for name in ['UserAttributeSimilarityValidator', 'MinimumLengthValidator',
                  'CommonPasswordValidator', 'NumericPasswordValidator']
 ]
+AUTHENTICATION_BACKENDS = ['accounts.backends.CustomerEmailBackend', 'django.contrib.auth.backends.ModelBackend']
+LOGIN_URL = '/cuenta/ingresar/'
+PASSWORD_RESET_TIMEOUT = 86400
+ACCOUNT_ORIGIN = os.getenv('ACCOUNT_ORIGIN', 'http://127.0.0.1:8000' if DEBUG else '')
 if os.getenv("CONTACT_TRUST_PROXY", "0") == "1":
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = os.getenv("DJANGO_HTTPS", "0") == "1"
@@ -80,4 +88,20 @@ CONTACT_TRUST_PROXY = os.getenv("CONTACT_TRUST_PROXY", "0") == "1"
 CONTACT_RATE_LIMIT = 5
 CONTACT_RATE_WINDOW = 600
 CONTACT_CACHE_DIR = BASE_DIR / "runtime" / "cache"
+ENVIA_TOKEN = os.getenv('ENVIA_TOKEN', '')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', '')
+PAYMENT_ORIGIN = os.getenv('PAYMENT_ORIGIN', ACCOUNT_ORIGIN)
+ENVIA_CARRIERS = [value.strip() for value in os.getenv('ENVIA_CARRIERS', 'dhl,fedex,estafeta').split(',') if value.strip()]
+SHIPPING_ORIGIN = {
+    'name': os.getenv('SHIPPING_ORIGIN_NAME', 'JazAr Arte y Diseno'),
+    'phone': os.getenv('SHIPPING_ORIGIN_PHONE', '5539754777'),
+    'street': os.getenv('SHIPPING_ORIGIN_STREET', '2a Privada de Aconitos'),
+    'number': os.getenv('SHIPPING_ORIGIN_NUMBER', '729'),
+    'district': os.getenv('SHIPPING_ORIGIN_DISTRICT', 'Villa de las Flores'),
+    'city': os.getenv('SHIPPING_ORIGIN_CITY', 'Coacalco'),
+    'state': os.getenv('SHIPPING_ORIGIN_STATE', 'EM'),
+    'country': 'MX', 'postalCode': os.getenv('SHIPPING_ORIGIN_POSTCODE', '55710'),
+    'reference': os.getenv('SHIPPING_ORIGIN_REFERENCE', 'Manzana K7 lote 16'),
+}
 DATA_UPLOAD_MAX_MEMORY_SIZE = 32768

@@ -1,0 +1,3 @@
+{% extends 'store/base.html' %}{% load static %}
+{% block styles %}{{ block.super }}<meta name="jazar-order-page" content="true"><link rel="stylesheet" href="{% static 'css/orders.css' %}">{% endblock %}
+{% block motion %}{{ block.super }}<script defer src="{% static 'js/orders.js' %}"></script>{% endblock %}

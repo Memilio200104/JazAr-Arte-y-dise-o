@@ -1,5 +1,8 @@
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.conf import settings
+from django.http import Http404
+from django.views.decorators.http import require_GET
 
 
 MESSAGES = {
@@ -36,3 +39,12 @@ def server_error(request):
 
 def csrf_failure(request, reason=''):
     return error_response(403)
+
+
+@require_GET
+def preview(request, status):
+    if not settings.DEBUG or status not in MESSAGES:
+        raise Http404
+    response = error_response(status)
+    response['Cache-Control'] = 'no-store'
+    return response

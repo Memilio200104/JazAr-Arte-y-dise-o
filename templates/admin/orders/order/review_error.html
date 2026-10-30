@@ -1,0 +1,2 @@
+{% extends 'admin/base_site.html' %}
+{% block content %}<h1>Revisa la solicitud</h1><a href="{{ back_url }}">Recargar pedido</a><form method="post" action="{{ review_url }}">{% csrf_token %}{{ review_form.as_p }}<input type="submit" value="Reintentar revisión"></form>{% endblock %}

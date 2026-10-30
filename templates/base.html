@@ -13,12 +13,15 @@
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
   <link rel="stylesheet" href="{% static 'css/polish.css' %}">
   <link rel="stylesheet" href="{% static 'css/store.css' %}">
+  <link rel="stylesheet" href="{% static 'css/credits.css' %}">
+  <link rel="stylesheet" href="{% static 'css/loading.css' %}">
   <link rel="preload" href="{% static 'fonts/space-grotesk-latin.woff2' %}" as="font" type="font/woff2" crossorigin>
-  <noscript><style>.site-header{position:static}html{scroll-padding-top:16px}.filters,.menu-toggle,.process-scene{display:none!important}.process-layout{grid-template-columns:1fr!important}.scene-mobile-image{display:block;width:100%;max-width:350px;aspect-ratio:1;object-fit:cover;margin-bottom:24px}@media(max-width:1023px){.site-header{height:auto;min-height:72px;flex-wrap:wrap;padding-top:20px;padding-bottom:20px}.site-header nav{display:flex;position:static;flex-basis:100%;box-shadow:none;padding:12px 0 0}.future-nav-space{display:none}}</style></noscript>
+  <noscript><style>.site-header{position:static}html{scroll-padding-top:16px}.filters,.menu-toggle,.process-scene{display:none!important}.process-layout{grid-template-columns:1fr!important}.scene-mobile-image{display:block;width:100%;max-width:350px;aspect-ratio:1;object-fit:cover;margin-bottom:24px}@media(max-width:1023px){.site-header{height:auto;min-height:72px;flex-wrap:wrap;padding-top:20px;padding-bottom:20px}#site-nav{display:flex;position:static;flex-basis:100%;box-shadow:none;padding:12px 0 0}.future-nav-space{display:none}}</style></noscript>
   {% block styles %}{% endblock %}
 </head>
 <body>
   <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  {% include 'includes/loading.html' %}
   {% block content %}{% endblock %}
   {% block motion %}{% endblock %}
 </body>

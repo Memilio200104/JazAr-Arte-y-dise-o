@@ -8,7 +8,7 @@
   <p class="store-feedback" data-store-feedback role="status" aria-live="polite"></p>
   <noscript><p>Activa JavaScript para guardar tu selección. También puedes <a href="{% url 'home' %}#contacto">contactar a Jazmin</a>.</p></noscript>
 </main>
-<footer class="store-footer"><strong>JazAr / Arte y Diseño</strong><span>Una pieza. Tu historia.</span><a href="https://wa.me/525539754777">Hablemos por WhatsApp <span aria-hidden="true">↗</span></a></footer>
+<footer class="store-footer"><strong>JazAr / Arte y Diseño</strong><span>Una pieza. Tu historia.</span><a href="https://wa.me/525539754777">Hablemos por WhatsApp <span aria-hidden="true">↗</span></a><div class="footer-credit">{% include 'includes/powered_by.html' %}</div></footer>
 {{ store_products|json_script:"store-products" }}
 {% endblock %}
 {% block motion %}<script defer src="{% static 'vendor/lucide.min.js' %}"></script><script defer src="{% static 'js/site.js' %}"></script><script defer src="{% static 'js/cart-state.js' %}"></script><script defer src="{% static 'js/store.js' %}"></script>{% endblock %}

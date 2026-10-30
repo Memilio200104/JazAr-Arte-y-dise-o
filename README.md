@@ -1,6 +1,8 @@
 # JazAr Arte y Diseño
 
-Sitio Django de presentacion, catalogo editable y frontend de tienda. Estado actualizado: 20 de octubre de 2026. El catalogo contiene 85 fichas con fotografias del cliente: 79 de precio fijo y 6 por cotizacion. El hero conserva el fondo original por peticion expresa del usuario.
+MVP funcional de presentacion, catalogo editable y e-commerce sobre Django. Edicion 1.0, actualizada el 30 de octubre de 2026: cuentas, pedidos, revision de diseno, envio, Stripe Checkout, cancelaciones y seguimiento. Integraciones externas en pruebas; sin despliegue ni cobros reales habilitados. El catalogo inicial contiene 85 fichas con fotografias del cliente: 79 de precio fijo y 6 por cotizacion. El hero conserva el fondo original por peticion expresa del usuario.
+
+**[Manual del MVP: compradores, Jazmin y operacion tecnica](docs/manual/README.md).** Documento editable y versionado para ampliarlo en los siguientes modulos. Consultar tambien [alcance y estimaciones de los modulos 3 y 3.5](docs/roadmap-modulos-3-y-3-5.md).
 
 ## Arranque local
 
@@ -27,26 +29,44 @@ El importador conserva ediciones de productos existentes. `--update-site` reempl
 
 ## Administracion
 
-El panel privado esta en `/admin/`. En esta maquina se creo `jazar_admin` sin contrasena utilizable; el propietario debe definirla en su terminal:
+El panel privado esta en `/admin/`. Usar una cuenta staff autorizada. Para una instalacion nueva, crear el administrador en su terminal:
 
 ```powershell
-python manage.py changepassword jazar_admin
+python manage.py createsuperuser
 ```
 
-La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se crea una cuenta propia. Ver [edicion de contenido](docs/editar-contenido.md).
+Las cuentas y sus correos solo viven en la base de datos, no en Git. Para cambiar una contrasena existente usar `python manage.py changepassword NOMBRE_DE_USUARIO`. Ver [guia de Jazmin](docs/manual/jazmin.md) y [edicion de contenido](docs/editar-contenido.md).
 
 ## Alcance acordado
 
 - Contenido comercial aprobado por el usuario.
 - Despliegue a cargo del usuario, una vez terminados ambos modulos.
-- Gmail real se configura al final del Modulo 2. Mantener `CONTACT_LOCAL_MODE=1` durante estas pruebas: el formulario no envia correos reales y lo informa.
+- Gmail real y notificaciones por correo quedan para el Modulo 3.5. El Modulo 3 corresponde al panel propio de Jazmin; ver [roadmap vigente](docs/roadmap-modulos-3-y-3-5.md). Mantener `CONTACT_LOCAL_MODE=1` durante estas pruebas: el formulario no envia correos reales y lo informa.
 - Operacion reportada como probada por el usuario; no equivale a una validacion adicional del servidor realizada por Codex.
-- Los productos fijos abren una ficha propia y se pueden agregar a una seleccion local en `/carrito/`. No reserva stock ni genera pedidos.
-- Existen pantallas de cuenta, solicitud y pago sin backend transaccional. No hay autenticacion de compradores, Stripe ni webhooks; las acciones definitivas permanecen deshabilitadas.
+- Los productos fijos abren una ficha propia y se agregan a una seleccion local en `/carrito/`. Continuar permite crear una solicitud real desde `/pedido/solicitud/`, con cuenta, direccion y resumen confirmado. No reserva stock ni cobra.
+- Registro, ingreso por correo, recuperacion, perfil, direcciones y solicitudes ya tienen backend. Jazmin aprueba desde Django Admin; el cliente consulta `/cuenta/pedidos/`. Los pedidos aprobados abren envio y pago: cotizacion Envia sandbox, reserva de stock y Stripe Checkout alojado en modo pruebas. Se requieren credenciales para probar la conexion externa; no hay cobros reales habilitados.
 - `/tienda/revision/` permite revisar todas las pantallas y ejemplos de estados solo con DEBUG=True; devuelve 404 en produccion.
-- Precios visibles no activan compras. Impresion 3D y excepciones marcadas en el PDF se cotizan.
+- La modalidad Precio fijo habilita la ficha de compra de un producto real y activo; el pago requiere cuenta, revision aprobada, disponibilidad y envio. Impresion 3D y excepciones marcadas en el PDF se cotizan.
 - Disenos sobre prendas negras: DTF. Los modelos multicolor indican la regla segun el color elegido.
-- Modulo 2 pendiente de especificacion de variantes, pedidos, envio y pagos en pruebas. No activar cobros reales por defecto.
+- El Modulo 2 tiene cotizacion, pago, cancelacion con devolucion completa y seguimiento manual de guias implementados. Se verificaron cobros y reembolso con Stripe sandbox. Los 79 productos de precio fijo tienen empaque asignado. Antes de ventas reales faltan validar fisicamente esos empaques y preparar la activacion operativa; las claves live siguen deshabilitadas. Ver [cancelaciones y seguimiento](docs/cancellations-tracking.md).
+
+## Envios y pagos locales
+
+Ver [operacion de envio y Checkout](docs/shipping-checkout-progress.md). Ejecutar `python manage.py migrate` y `python manage.py seed_shipping_profiles --apply` tras respaldar la base. Este comando conserva ediciones y solo asigna los SKU identificados; cajas y pesos siguen siendo provisionales.
+
+En `.env`, configurar `ENVIA_TOKEN` del sandbox, `STRIPE_SECRET_KEY` de pruebas y `STRIPE_WEBHOOK_SECRET`. No compartir claves por chat ni versionarlas. `PAYMENT_ORIGIN=http://127.0.0.1:8000` permite el retorno local. Sin credenciales se muestran errores recuperables, no pagos simulados exitosos.
+
+Con Stripe CLI instalado y autenticado en pruebas:
+
+```powershell
+stripe listen --events checkout.session.completed,checkout.session.expired,refund.created,refund.updated,refund.failed --forward-to http://127.0.0.1:8000/pagos/stripe/webhook/
+python manage.py reconcile_payments --limit 100
+python manage.py reconcile_refunds --limit 100
+```
+
+El primer comando muestra el secreto de firma de ese listener; configurarlo localmente en `.env` y reiniciar Django. La conciliacion se ejecuta manualmente en local; el operador debera programarla periodicamente al preparar produccion. El retorno desde Stripe no acredita por si solo un pago.
+
+Cancelacion: **Mis pedidos → Ver pedido → Solicitar cancelacion**. Plazo: antes de cumplir 24 horas desde el pago, total menor a $2,000 MXN incluido envio, devolucion completa. No se repone stock automaticamente. Guias: **Admin → Orders → pedido pagado → Guia y seguimiento**; generar la guia en Envia antes de registrarla. Los reembolsos aparecen en **Payments → Cancelaciones y reembolsos**.
 
 ## Configuracion y persistencia
 
@@ -60,6 +80,8 @@ Gmail usa SMTP nativo de Django, sin automatizadores externos. WhatsApp y Facebo
 
 Paginas artisticas personalizadas para 400, 403, 404 y 500, incluida la denegacion CSRF. La pagina 500 no depende de consultas de base de datos ni muestra excepciones. Django muestra su pagina tecnica 404/500 cuando `DEBUG=1`; probar los handlers con `DEBUG=False` en tests, sin cambiar el entorno habitual.
 
+Para revisarlas con el servidor local, abrir `/tienda/revision/` o `/tienda/revision/errores/400/` (tambien 403, 404 y 500). Estas vistas reutilizan las paginas originales y sus codigos HTTP, sin lanzar excepciones, sin consultas a la base de datos y sin cache. Solo funcionan con DEBUG=True; en produccion devuelven 404.
+
 Favicon ICO, PNG y Apple Touch Icon derivados del logo suministrado, sin redibujarlo. Las fuentes y dependencias JavaScript se sirven localmente. Animaciones GSAP con alternativa de movimiento reducido y contenido accesible sin JavaScript.
 
 ## Verificacion
@@ -71,7 +93,7 @@ python manage.py makemigrations --check --dry-run
 docker compose config --quiet
 ```
 
-40 pruebas Django y pruebas puras del carrito (`node scripts/test_cart_state.cjs`). Scripts Playwright en `scripts/check_*.cjs` requieren Node, Playwright y Chrome; las utilidades de imagen requieren sharp o Pillow segun el script. No son dependencias de ejecucion del sitio. `check_store.cjs` comprueba la tienda en siete anchos, almacenamiento y navegacion.
+Suite Django y pruebas puras del carrito (`node scripts/test_cart_state.cjs`). Scripts Playwright en `scripts/check_*.cjs` requieren Node, Playwright y Chrome; las utilidades de imagen requieren sharp o Pillow segun el script. No son dependencias de ejecucion del sitio. `check_store.cjs` comprueba la tienda en siete anchos. `check_errors.cjs` comprueba los errores en cuatro anchos. `check_accounts.cjs` y `check_orders.cjs` usan el servidor aislado del puerto 8011. Consultar [cuentas](docs/customer-accounts-progress.md) y [pedidos y aprobacion](docs/order-review-progress.md) para comandos y resultados.
 
 El motor Docker no estaba disponible para la ultima comprobacion del agente. El despliegue real, TLS y SMTP no se afirman verificados por estas pruebas locales. `check --deploy` muestra advertencias esperadas con el entorno de desarrollo.
 
@@ -83,4 +105,4 @@ El motor Docker no estaba disponible para la ultima comprobacion del agente. El 
 - [Infraestructura](docs/fase-1-infraestructura.md): referencia historica y pasos de servidor; no es estado actual.
 - `AGENTS.md`: Superpowers, ui-ux-pro-max y web-design-guidelines, aplicados segun la etapa. Los antiguos plugins UI UX Designer y Web Design fueron sustituidos; no se presentan como disponibles.
 
-Rama de trabajo: `codex/pulido-visual`. `main` y `master` conservan la base anterior; un push de la rama no despliega ni fusiona automaticamente esos cambios.
+Rama de referencia del MVP: `main`, con la version funcional integrada desde `codex/pulido-visual`. `master` conserva la base historica. Un push no despliega automaticamente el sitio. El manual vigente esta en `docs/manual/`; las bitacoras anteriores conservan el estado de sus respectivas fechas.

@@ -152,7 +152,7 @@ summary:focus-visible {
   margin-top: 7px;
   letter-spacing: 0;
 }
-nav {
+#site-nav {
   display: flex;
   align-items: center;
   gap: 32px;
@@ -160,10 +160,10 @@ nav {
   font-weight: 600;
   margin-left: auto;
 }
-nav > a {
+#site-nav > a {
   padding: 14px 0;
 }
-nav > a:hover {
+#site-nav > a:hover {
   color: var(--magenta);
 }
 .nav-cta {
@@ -858,7 +858,7 @@ select.input {
     padding: 0 32px;
     gap: 16px;
   }
-  nav {
+  #site-nav {
     gap: 22px;
   }
   .future-nav-space {
@@ -908,8 +908,8 @@ select.input {
 @media (min-width: 768px) and (max-width: 1023px) {
   .future-nav-space { margin-left: auto; }
   .menu-toggle { display: flex; }
-  nav { display: none; position: absolute; top: 87px; left: 0; right: 0; padding: 24px 36px; background: var(--paper); flex-direction: column; align-items: stretch; }
-  nav.is-open { display: flex; }
+  #site-nav { display: none; position: absolute; top: 87px; left: 0; right: 0; padding: 24px 36px; background: var(--paper); flex-direction: column; align-items: stretch; }
+  #site-nav.is-open { display: flex; }
   .nav-cta { justify-content: space-between; }
 }
 @media (max-width: 767px) {
@@ -940,7 +940,7 @@ select.input {
   .menu-toggle {
     display: flex;
   }
-  nav {
+  #site-nav {
     display: none;
     position: absolute;
     top: 71px;
@@ -953,7 +953,7 @@ select.input {
     align-items: stretch;
     gap: 8px;
   }
-  nav.is-open {
+  #site-nav.is-open {
     display: flex;
   }
   .nav-cta {

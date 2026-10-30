@@ -12,6 +12,6 @@ def store_context():
         "store_products": [{
             "id": p.pk, "name": p.name, "url": reverse("product_detail", args=[p.slug]),
             "image_url": p.image_url, "price_minor": int(p.price * 100),
-            "currency": p.currency, "stock": p.stock,
+            "currency": p.currency, "stock": p.available_stock,
         } for p in eligible_products()],
     }

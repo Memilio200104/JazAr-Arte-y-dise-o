@@ -41,3 +41,26 @@ class ErrorPageTests(TestCase):
 
     def test_home_has_favicon(self):
         self.assertContains(self.client.get('/'), 'icons/favicon.ico')
+
+
+class ErrorPreviewTests(TestCase):
+    @override_settings(DEBUG=True)
+    def test_local_previews_reuse_art_pages(self):
+        from .errors import MESSAGES
+        for status, (title, _) in MESSAGES.items():
+            with self.subTest(status=status), self.assertNumQueries(0):
+                response = self.client.get(f'/tienda/revision/errores/{status}/')
+                self.assertContains(response, title, status_code=status)
+                self.assertIn('no-store', response.headers['Cache-Control'])
+
+    @override_settings(DEBUG=False)
+    def test_previews_are_hidden_in_production(self):
+        for status in [400, 403, 404, 500]:
+            response = self.client.get(f'/tienda/revision/errores/{status}/')
+            self.assertEqual(response.status_code, 404)
+            self.assertNotIn('no-store', response.headers.get('Cache-Control', ''))
+
+    @override_settings(DEBUG=True)
+    def test_unknown_code_and_post_not_supported(self):
+        self.assertEqual(self.client.get('/tienda/revision/errores/418/').status_code, 404)
+        self.assertEqual(self.client.post('/tienda/revision/errores/500/').status_code, 405)

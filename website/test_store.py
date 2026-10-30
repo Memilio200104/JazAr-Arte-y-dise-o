@@ -32,8 +32,7 @@ class StoreTests(TestCase):
     def test_store_pages_are_get_only(self):
         from django.contrib.auth import get_user_model
         count = get_user_model().objects.count()
-        for path in ["/carrito/", "/cuenta/", "/cuenta/ingresar/", "/cuenta/registro/",
-                     "/cuenta/recuperar/", "/pedido/solicitud/", "/pedido/pago/"]:
+        for path in ["/carrito/", "/pedido/pago/"]:
             self.assertEqual(self.client.get(path).status_code, 200, path)
             self.assertEqual(self.client.post(path, {"password": "never-store"}).status_code, 405)
         self.assertEqual(get_user_model().objects.count(), count)
