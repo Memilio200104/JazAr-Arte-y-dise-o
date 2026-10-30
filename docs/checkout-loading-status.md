@@ -27,7 +27,7 @@ El secreto local existe y coincide con Stripe CLI autenticado. Tras recargar Dja
 En la primera verificacion no se dejo un listener activo: la revision automatica bloqueo su arranque con `blocked by policy`, sin razon mas especifica. El 29 de octubre el operador lo inicio y se verifico entrega de eventos de pago y vencimiento; ver [pruebas de proveedores](provider-acceptance-2026-10-29.md). Para pruebas locales el operador debe mantener abierto en su terminal:
 
 ```powershell
-stripe listen --events checkout.session.completed,checkout.session.expired --forward-to http://127.0.0.1:8000/pagos/stripe/webhook/
+stripe listen --events checkout.session.completed,checkout.session.expired,refund.created,refund.updated,refund.failed --forward-to http://127.0.0.1:8000/pagos/stripe/webhook/
 ```
 
-Pago sandbox, entrega de webhook, consumo de stock, rechazo, abandono y reintento verificados el 29 de octubre. Pendientes de cierre: definir y ejecutar cancelacion/reembolso (inicio de 24 horas, base del limite menor a 2000 MXN y devolucion del envio); acordar operacion de guias/seguimiento. Validacion fisica de empaques antes de ventas reales. El despliegue corresponde al usuario; Gmail y panel propio de Jazmin siguen en Modulo 3.
+Pago sandbox, entrega de webhook, consumo de stock, rechazo, abandono y reintento verificados el 29 de octubre. Cancelacion/reembolso y registro manual de guias implementados en la continuacion; ver [operacion y evidencia](cancellations-tracking.md). El operador debe ampliar el listener para incluir los eventos refund. Validacion fisica de empaques antes de ventas reales. El despliegue corresponde al usuario; Gmail y panel propio de Jazmin siguen en Modulo 3.

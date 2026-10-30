@@ -14,7 +14,7 @@
         return;
       }
       const button = event.submitter;
-      const label = labels[button?.value] || 'Procesando tu solicitud…';
+      const label = labels[button?.value] || form.dataset.loadingMessage || 'Procesando tu solicitud…';
       form.dataset.loadingMessage = label;
       if (button && button.name) {
         const action = document.createElement('input');

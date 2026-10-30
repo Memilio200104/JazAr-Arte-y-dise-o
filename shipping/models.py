@@ -6,6 +6,26 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 
+class Shipment(models.Model):
+    order = models.OneToOneField('orders.Order', on_delete=models.PROTECT, related_name='shipment')
+    carrier = models.CharField('Transportista', max_length=80)
+    tracking_number = models.CharField('Número de guía', max_length=120)
+    tracking_url = models.URLField('Enlace de seguimiento (HTTPS)', max_length=500, blank=True)
+    status = models.CharField('Estado', max_length=12, default='shipped', choices=[
+        ('shipped', 'En camino'), ('delivered', 'Entregado')])
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        permissions = [('manage_shipment', 'Puede registrar y actualizar guías de pedidos')]
+        verbose_name = 'envío'
+        verbose_name_plural = 'envíos'
+
+    def __str__(self):
+        return f'{self.carrier} · {self.tracking_number}'
+
+
 class ValidatedPacking(models.Model):
     validated_at = models.DateTimeField(null=True, blank=True, editable=False)
     validated_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,

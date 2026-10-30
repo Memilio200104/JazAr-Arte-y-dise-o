@@ -11,6 +11,7 @@
 <h2 class="order-section-title">Tus piezas</h2>
 {% for item in order.items.all %}<article class="order-line"><h3>{{ item.name }}</h3><p>{{ item.quantity }} &times; ${{ item.unit_price }} MXN</p><strong>${{ item.total }} MXN</strong></article>{% endfor %}
 {% if order.review_status != 'approved' %}<p>Jazmin debe aprobar tu dise&ntilde;o antes de continuar al pago.</p><button class="button button-primary" disabled>Esperando aprobaci&oacute;n</button>
+{% elif refund %}<div class="account-alert" role="status"><h2>{{ refund.get_state_display }}</h2><p>El pago original de ${{ attempt_total }} MXN permanece registrado. Consulta el estado de la devolución en tu pedido.</p><a class="text-link" href="{% url 'order_cancel' order.public_id %}">Ver cancelación</a></div>
 {% elif attempt.state == 'paid' %}<div class="account-alert" role="status"><h2>Pago confirmado</h2><p>Tu pago de ${{ attempt_total }} MXN qued&oacute; registrado.</p></div>
 {% elif active_payment %}<h2 class="order-section-title">{{ attempt.get_state_display }}</h2><p>Tu pedido conserva su referencia mientras verificamos el pago.</p>
 <div class="checkout-actions"><form method="post">{% csrf_token %}<button class="button button-primary" name="action" value="resume">Retomar pago <i data-lucide="arrow-up-right" aria-hidden="true"></i></button></form>

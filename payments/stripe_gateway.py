@@ -45,7 +45,8 @@ def create_session(attempt):
 
 def retrieve_session(session_id):
     try:
-        return _client().v1.checkout.sessions.retrieve(session_id).to_dict()
+        return _client().v1.checkout.sessions.retrieve(session_id,
+            params={'expand': ['payment_intent.latest_charge']}).to_dict()
     except stripe.StripeError:
         raise PaymentUnavailable() from None
 
@@ -56,3 +57,33 @@ def expire_session(session_id):
     except stripe.StripeError:
         # A payment can win the race against expiry. Read canonical state.
         return retrieve_session(session_id)
+
+
+def create_refund(refund):
+    try:
+        return _client().v1.refunds.create({
+            'charge': refund.attempt.charge_id, 'amount': refund.amount_minor,
+            'reason': 'requested_by_customer', 'metadata': {'cancellation': str(refund.public_id)},
+        }, options={'idempotency_key': 'cancel-' + str(refund.public_id)}).to_dict()
+    except stripe.StripeError:
+        # Keep the request: a timeout is not proof that Stripe rejected it.
+        raise PaymentUnavailable() from None
+
+
+def retrieve_refund(provider_id):
+    try:
+        return _client().v1.refunds.retrieve(provider_id).to_dict()
+    except stripe.StripeError:
+        raise PaymentUnavailable() from None
+
+
+def find_refund(refund):
+    """Recover acceptance even after Stripe's idempotency retention window."""
+    try:
+        results = _client().v1.refunds.list({'charge': refund.attempt.charge_id, 'limit': 100})
+        for item in results.auto_paging_iter():
+            if item.metadata.get('cancellation') == str(refund.public_id):
+                return item.to_dict()
+        return None
+    except stripe.StripeError:
+        raise PaymentUnavailable() from None

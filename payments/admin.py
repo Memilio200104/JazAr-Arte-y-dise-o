@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from django.db import DatabaseError
-from .models import PaymentAttempt, StockReservation, ProviderEvent
+from .models import PaymentAttempt, StockReservation, ProviderEvent, Refund
 from .services import reconcile_attempt
 
 
@@ -45,3 +45,26 @@ class StockReservationAdmin(ReadOnlyAdmin):
 @admin.register(ProviderEvent)
 class ProviderEventAdmin(ReadOnlyAdmin):
     list_display=('event_id','attempt','processed_at')
+
+
+@admin.register(Refund)
+class RefundAdmin(ReadOnlyAdmin):
+    list_display = ('public_id', 'attempt', 'state', 'amount_minor', 'requested_at')
+    list_filter = ('state',)
+    search_fields = ('public_id', 'attempt__order__public_id', 'attempt__order__customer__email')
+    readonly_fields = tuple(f.name for f in Refund._meta.fields)
+    actions = ('reconcile',)
+
+    def has_reconcile_permission(self, request):
+        return request.user.has_perm('payments.reconcile_refund')
+
+    @admin.action(description='Consultar / recuperar devolución en Stripe', permissions=['reconcile'])
+    def reconcile(self, request, queryset):
+        from .refunds import reconcile_refund
+        for refund in queryset[:25]:
+            try:
+                result = reconcile_refund(refund.pk)
+                self.log_change(request, result, 'Conciliación de devolución con Stripe')
+                self.message_user(request, f'{result.public_id}: {result.get_state_display()}')
+            except (ValidationError, DatabaseError):
+                self.message_user(request, 'La solicitud se conserva. Revisa la devolución en Stripe antes de cualquier otra operación.', messages.ERROR)

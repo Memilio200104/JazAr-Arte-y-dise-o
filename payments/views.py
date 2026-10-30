@@ -13,7 +13,7 @@ from website.store_presenters import store_context
 from shipping.models import ShippingQuote
 from shipping.services import fetch_order_rates
 from orders.models import Order
-from .models import PaymentAttempt, ACTIVE
+from .models import PaymentAttempt, Refund, ACTIVE
 from .services import start_checkout, reconcile_attempt, apply_session_snapshot
 from . import stripe_gateway
 
@@ -70,6 +70,7 @@ def checkout(request, public_id):
         status=503
     attempt=order.payment_attempts.order_by('-created_at').first()
     context['attempt']=attempt
+    context['refund'] = getattr(attempt, 'refund', None) if attempt else None
     context['active_payment']=bool(attempt and attempt.state in ACTIVE)
     context['total']=order.subtotal + (context['selected'].amount if context['selected'] else Decimal(0))
     if attempt:
@@ -88,6 +89,17 @@ def stripe_webhook(request):
         event=stripe.Webhook.construct_event(request.body,request.headers.get('Stripe-Signature',''),settings.STRIPE_WEBHOOK_SECRET).to_dict()
         if event.get('livemode') is not False:
             return HttpResponse(status=400)
+        if event.get('type') in ('refund.created', 'refund.updated', 'refund.failed'):
+            from .refunds import apply_refund_snapshot
+            data = event['data']['object']
+            refund = Refund.objects.filter(provider_id=data['id']).first()
+            if not refund:
+                reference = (data.get('metadata') or {}).get('cancellation')
+                refund = Refund.objects.filter(public_id=reference).first() if reference else None
+            if refund:
+                canonical = stripe_gateway.retrieve_refund(data['id'])
+                apply_refund_snapshot(refund.pk, canonical, event_id=event['id'])
+            return HttpResponse(status=200)
         if event.get('type') not in ('checkout.session.completed','checkout.session.expired','checkout.session.async_payment_succeeded','checkout.session.async_payment_failed'):
             return HttpResponse(status=200)
         data=event['data']['object']

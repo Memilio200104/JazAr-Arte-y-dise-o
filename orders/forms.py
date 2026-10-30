@@ -3,6 +3,11 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 
+class CancellationForm(forms.Form):
+    confirm = forms.BooleanField(label='Quiero cancelar este pedido y solicitar la devolución completa.',
+        error_messages={'required': 'Confirma la cancelación antes de enviarla.'})
+
+
 class RequestForm(forms.Form):
     rows=forms.CharField(widget=forms.HiddenInput)
     address=forms.ModelChoiceField(queryset=None,label='Dirección de envío',empty_label='Selecciona una dirección')

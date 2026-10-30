@@ -46,7 +46,7 @@ La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se 
 - `/tienda/revision/` permite revisar todas las pantallas y ejemplos de estados solo con DEBUG=True; devuelve 404 en produccion.
 - Precios visibles no activan compras. Impresion 3D y excepciones marcadas en el PDF se cotizan.
 - Disenos sobre prendas negras: DTF. Los modelos multicolor indican la regla segun el color elegido.
-- El Modulo 2 aun requiere aceptacion integral con cuentas sandbox, validacion fisica de los empaques provisionales y cerrar operacion de guias/cancelaciones antes de produccion. Los 79 productos de precio fijo tienen empaque asignado; Mis pedidos distingue revision, aprobacion y estado de pago. No activar cobros reales.
+- El Modulo 2 tiene cotizacion, pago, cancelacion con devolucion completa y seguimiento manual de guias implementados. Se verificaron cobros y reembolso con Stripe sandbox. Los 79 productos de precio fijo tienen empaque asignado. Antes de ventas reales faltan validar fisicamente esos empaques y preparar la activacion operativa; las claves live siguen deshabilitadas. Ver [cancelaciones y seguimiento](docs/cancellations-tracking.md).
 
 ## Envios y pagos locales
 
@@ -57,11 +57,14 @@ En `.env`, configurar `ENVIA_TOKEN` del sandbox, `STRIPE_SECRET_KEY` de pruebas 
 Con Stripe CLI instalado y autenticado en pruebas:
 
 ```powershell
-stripe listen --events checkout.session.completed,checkout.session.expired --forward-to http://127.0.0.1:8000/pagos/stripe/webhook/
+stripe listen --events checkout.session.completed,checkout.session.expired,refund.created,refund.updated,refund.failed --forward-to http://127.0.0.1:8000/pagos/stripe/webhook/
 python manage.py reconcile_payments --limit 100
+python manage.py reconcile_refunds --limit 100
 ```
 
 El primer comando muestra el secreto de firma de ese listener; configurarlo localmente en `.env` y reiniciar Django. La conciliacion se ejecuta manualmente en local; el operador debera programarla periodicamente al preparar produccion. El retorno desde Stripe no acredita por si solo un pago.
+
+Cancelacion: **Mis pedidos → Ver pedido → Solicitar cancelacion**. Plazo: antes de cumplir 24 horas desde el pago, total menor a $2,000 MXN incluido envio, devolucion completa. No se repone stock automaticamente. Guias: **Admin → Orders → pedido pagado → Guia y seguimiento**; generar la guia en Envia antes de registrarla. Los reembolsos aparecen en **Payments → Cancelaciones y reembolsos**.
 
 ## Configuracion y persistencia
 

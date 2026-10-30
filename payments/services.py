@@ -126,12 +126,15 @@ def apply_session_snapshot(attempt_id, snapshot, event_id=None):
         attempt.save(update_fields=['state','session_id','checkout_url','updated_at'])
     if event_id:
         ProviderEvent.objects.create(event_id=event_id,attempt=attempt,processed_at=timezone.now())
+    if attempt.state == 'paid':
+        from .refunds import capture_payment_details
+        capture_payment_details(attempt, snapshot)
     return attempt
 
 
 def reconcile_attempt(attempt_id, *, expire=False):
     attempt = PaymentAttempt.objects.get(pk=attempt_id)
-    if attempt.state in ('paid','expired','failed'):
+    if attempt.state in ('expired','failed') or (attempt.state == 'paid' and attempt.paid_at):
         return attempt
     if not attempt.session_id:
         if attempt.state == 'creating':

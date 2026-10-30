@@ -2,6 +2,8 @@
 
 Actualizado el 28 de octubre de 2026. Plan: docs/superpowers/plans/2026-10-25-shipping-checkout.md. Especificacion aprobada con agrupacion de productos. Ejecucion directa en la carpeta y rama existentes; no despliegue.
 
+**Estado vigente al 30 de octubre:** el recorrido de pago sandbox se verifico con proveedores el 29 de octubre. Cancelacion con devolucion completa y seguimiento manual de guias ya estan implementados; consultar [operacion y evidencia actual](cancellations-tracking.md). Los pendientes externos citados en las secciones historicas inferiores se sustituyen por ese estado. Se conserva el bloqueo a cobros reales y la validacion fisica de empaques pendiente.
+
 ## Implementado
 
 - Perfiles de caja y asignaciones por producto en Django Admin: dimensiones exteriores, tara, peso bruto maximo, capacidad y peso unitario protegido. Validacion administrativa con autor/fecha; cambios operativos invalidan la confirmacion.

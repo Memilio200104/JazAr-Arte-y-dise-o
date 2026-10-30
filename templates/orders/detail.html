@@ -2,6 +2,7 @@
 {% block store_content %}<div class="store-heading"><p class="eyebrow">JAZAR / TU PEDIDO</p><h1>{{ progress.label }}</h1><p class="order-reference">{{ order.public_id }}</p></div>
 <a class="text-link" href="{% url 'order_list' %}">Todos mis pedidos</a><p role="status" data-order-cleanup></p>
 <div class="store-columns"><section>{% include 'orders/status.html' %}<p>Diseño: {{ order.get_review_status_display }}</p>
+{% if progress.shipment %}<section class="order-tracking" id="seguimiento"><h2 class="order-section-title">Seguimiento del envío</h2><p><strong>{{ progress.shipment.get_status_display }}</strong> · {{ progress.shipment.carrier }}</p><p>Número de guía: <strong class="order-reference">{{ progress.shipment.tracking_number }}</strong></p>{% if progress.shipment.tracking_url %}<a class="button button-outline" href="{{ progress.shipment.tracking_url }}" target="_blank" rel="noopener noreferrer">Rastrear envío <i data-lucide="arrow-up-right" aria-hidden="true"></i></a>{% endif %}<p>Actualizado por Jazmin el {{ progress.shipment.updated_at|date:"DATETIME_FORMAT" }}. Consulta el enlace del transportista para conocer los últimos movimientos.</p></section>{% endif %}
 {% if order.review_note %}<div class="account-alert"><h2 class="order-section-title">Nota de Jazmin</h2><p class="order-text">{{ order.review_note }}</p></div>{% endif %}
 {% for item in order.items.all %}<article class="order-line"><h2>{{ item.name }}</h2><p>{{ item.quantity }} × ${{ item.unit_price }} MXN</p>{% if item.details %}<p>{{ item.details }}</p>{% endif %}<strong>${{ item.total }} MXN</strong></article>{% endfor %}
 <h2 class="order-section-title">Dirección de este pedido</h2>{% include 'orders/address.html' with address=order.shipping_address %}
@@ -12,6 +13,7 @@
 {% if progress.paid %}
 <div class="summary-line"><span>Envío</span><strong>${{ progress.attempt.quote.amount|floatformat:2 }} MXN</strong></div>
 <div class="summary-line"><span>Total pagado</span><strong>${{ progress.total|floatformat:2 }} MXN</strong></div>
+{% if progress.can_cancel %}<a class="text-link" href="{% url 'order_cancel' order.public_id %}">Solicitar cancelación</a>{% endif %}
 {% elif progress.attempt %}<p>Consulta el importe y servicio de envío en la página de pago.</p>
 {% else %}<div class="summary-line"><span>Envío</span><span>Pendiente de calcular</span></div>{% endif %}
 {% if order.review_status != 'approved' and not progress.paid %}<p>Jazmin debe aprobar el diseño antes de que puedas pagar.</p><button class="button button-primary" disabled>Esperando aprobación <i data-lucide="lock-keyhole" aria-hidden="true"></i></button>{% endif %}</aside></div>

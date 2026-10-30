@@ -1,0 +1,26 @@
+{% extends 'orders/base.html' %}{% load static %}
+{% block store_content %}
+<div data-checkout>
+<div class="store-heading"><p class="eyebrow">JAZAR / TU PEDIDO</p><h1>{% if progress.refund %}{{ progress.label }}{% else %}Cancelar pedido{% endif %}</h1><p class="order-reference">{{ order.public_id }}</p></div>
+<a class="text-link" href="{% url 'order_detail' order.public_id %}">Volver al pedido</a>
+<p data-payment-feedback role="status" aria-live="polite"></p>
+<div class="store-columns checkout-layout"><section class="order-cancellation">
+{% if error %}<div class="account-alert" role="alert" tabindex="-1">{{ error }}</div>{% endif %}
+{% if progress.refund %}<p role="status">{{ progress.message }}</p>
+{% if progress.refund.state == 'requested' or progress.refund.state == 'pending' %}
+<form method="post" data-loading-message="Consultando devolución…">{% csrf_token %}<input type="hidden" name="confirm" value="on"><button class="button button-outline" type="submit">Actualizar devolución <i data-lucide="refresh-cw" aria-hidden="true"></i></button></form>
+{% endif %}
+<a class="text-link" href="https://wa.me/525539754777?text=Hola%20Jazmin%2C%20quiero%20consultar%20la%20cancelacion%20del%20pedido%20{{ order.public_id }}">Consultar con Jazmin por WhatsApp</a>
+{% elif progress.can_cancel %}
+<h2 class="order-section-title">Antes de confirmar</h2><p>Solicitarás cancelar todas las piezas de este pedido y devolver el total pagado, incluido el envío, al mismo medio de pago.</p>
+<p>Se admiten cancelaciones antes de cumplir 24 horas desde el pago y para totales menores a $2,000 MXN. La devolución puede tardar en aparecer en tu tarjeta según tu banco.</p>
+{% if progress.cancel_deadline %}<p>Plazo para solicitarla: {{ progress.cancel_deadline|date:"DATETIME_FORMAT" }} (hora de Ciudad de México).</p>{% endif %}
+<form method="post" data-loading-message="Solicitando cancelación…">{% csrf_token %}
+<label class="order-confirm" for="{{ form.confirm.id_for_label }}">{{ form.confirm }} <span>{{ form.confirm.label }}</span></label>
+{% if form.confirm.errors %}<div id="{{ form.confirm.id_for_label }}_error" class="account-alert" role="alert" tabindex="-1">{{ form.confirm.errors }}</div>{% endif %}
+<div class="checkout-actions"><button class="button button-primary" type="submit">Confirmar cancelación <i data-lucide="undo-2" aria-hidden="true"></i></button><a class="button button-outline" href="{% url 'order_detail' order.public_id %}">Conservar mi pedido</a></div>
+</form>
+{% else %}<h2 class="order-section-title">Consulta con Jazmin</h2><p>La cancelación desde el sitio está disponible para pagos confirmados menores a $2,000 MXN, durante las primeras 24 horas posteriores al pago.</p><a class="button button-outline" href="https://wa.me/525539754777">Hablar con Jazmin</a>{% endif %}
+</section><aside class="store-summary"><h2>Tu pedido</h2><div class="summary-line"><span>Productos</span><strong>${{ order.subtotal|floatformat:2 }} MXN</strong></div>{% if progress.paid %}<div class="summary-line"><span>Envío</span><strong>${{ progress.attempt.quote.amount|floatformat:2 }} MXN</strong></div><div class="summary-line"><span>Total de la devolución</span><strong>${{ progress.total|floatformat:2 }} MXN</strong></div>{% endif %}</aside></div>
+</div>{% endblock %}
+{% block motion %}{{ block.super }}<script defer src="{% static 'js/checkout.js' %}"></script>{% endblock %}

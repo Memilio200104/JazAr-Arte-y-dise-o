@@ -1,5 +1,6 @@
 """Customer-facing progress; design approval is never presented as payment."""
 from decimal import Decimal
+from datetime import timedelta
 
 from django.urls import reverse
 
@@ -18,6 +19,8 @@ def order_progress(order):
     attempts = getattr(order, 'recent_payments', None)
     attempt = (attempts[0] if attempts else None) if attempts is not None else order.latest_payment
     paid = bool(attempt and attempt.state == 'paid')
+    refund = getattr(attempt, 'refund', None) if attempt else None
+    shipment = getattr(order, 'shipment', None)
     if attempt and (paid or order.review_status == 'approved'):
         label, message, action, tone, icon = PAYMENT_COPY.get(attempt.state, PAYMENT_COPY['reconciliation_required'])
         url = reverse('order_payment', args=[order.public_id])
@@ -33,7 +36,26 @@ def order_progress(order):
         action = 'Enviar ajustes por WhatsApp' if changes else 'Enviar diseño por WhatsApp'
         tone, icon = ('attention', 'pencil-line') if changes else ('pending', 'clock')
         url = f'https://wa.me/525539754777?text=Hola%20Jazmin%2C%20mi%20pedido%20es%20{order.public_id}'
+    if paid and shipment:
+        label = 'Entregado' if shipment.status == 'delivered' else 'En camino'
+        message = 'Consulta la guía y el seguimiento de tu envío en el detalle del pedido.'
+        action, url, tone, icon = 'Ver seguimiento', reverse('order_detail', args=[order.public_id])+'#seguimiento', 'success', 'truck'
+    if refund:
+        label = refund.get_state_display()
+        message = {
+            'requested': 'Registramos tu cancelación. Estamos verificando la devolución; puedes consultar su estado.',
+            'pending': 'La devolución completa está en proceso. El plazo para verla en tu tarjeta depende de tu banco.',
+            'succeeded': 'Stripe confirmó la devolución completa al medio de pago original. Tu banco puede tardar en reflejarla.',
+            'failed': 'La cancelación sigue registrada. Jazmin necesita revisar la devolución; contáctala por WhatsApp.',
+            'canceled': 'La cancelación sigue registrada. Jazmin necesita revisar la devolución; contáctala por WhatsApp.',
+        }[refund.state]
+        action, url = 'Ver cancelación', reverse('order_cancel', args=[order.public_id])
+        tone, icon = ('success', 'circle-check') if refund.state == 'succeeded' else ('attention', 'clock')
+    from payments.refunds import eligible
+    can_cancel = paid and not refund and (eligible(attempt) or (not attempt.paid_at and 0 < attempt.total_minor < 200000))
     return dict(label=label, message=message, action_label=action, action_url=url,
                 tone=tone, icon=icon, paid=paid, attempt=attempt,
+                refund=refund, shipment=shipment, can_cancel=can_cancel,
+                cancel_deadline=attempt.paid_at+timedelta(hours=24) if paid and attempt.paid_at else None,
                 total=Decimal(attempt.total_minor) / 100 if paid else order.subtotal,
                 amount_label='Total pagado' if paid else 'Subtotal de productos')

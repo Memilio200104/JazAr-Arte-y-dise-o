@@ -9,7 +9,7 @@ from django.core.paginator import Paginator
 from django.views.decorators.http import require_http_methods, require_GET
 from accounts.views import customer_required
 from website.store_presenters import store_context
-from .forms import RequestForm
+from .forms import RequestForm, CancellationForm
 from .models import Order
 from .presentation import order_progress
 from payments.models import PaymentAttempt
@@ -67,8 +67,8 @@ def request_order(request):
 @customer_required
 @require_GET
 def order_list(request):
-    queryset = request.customer.orders.prefetch_related(Prefetch('payment_attempts',
-        queryset=PaymentAttempt.objects.order_by('-created_at', '-pk'), to_attr='recent_payments'))
+    queryset = request.customer.orders.select_related('shipment').prefetch_related(Prefetch('payment_attempts',
+        queryset=PaymentAttempt.objects.select_related('refund', 'quote').order_by('-created_at', '-pk'), to_attr='recent_payments'))
     orders=Paginator(queryset,20).get_page(request.GET.get('page'))
     for order in orders:
         order.progress = order_progress(order)
@@ -86,3 +86,25 @@ def order_detail(request,public_id,payment=False):
         submitted=[{'id':r['product_id'],'quantity':r['quantity']} for r in pending['rows']]
     return render(request,'orders/detail.html',{**store_context(),'order':order,'payment':payment,
         'submitted_cart':submitted,'page_title':'Tu pedido','progress':order_progress(order)})
+
+
+@customer_required
+@require_http_methods(['GET', 'POST'])
+def cancel_order(request, public_id):
+    from payments.refunds import request_cancellation
+    order = get_object_or_404(request.customer.orders, public_id=public_id)
+    form = CancellationForm(request.POST if request.method == 'POST' else None)
+    context = dict(order=order, form=form, page_title='Cancelar pedido')
+    status = 200
+    if request.method == 'POST' and form.is_valid():
+        try:
+            request_cancellation(request.customer, order.pk)
+        except ValidationError as exc:
+            context['error'] = ' '.join(exc.messages)
+        except DatabaseError:
+            context['error'] = 'No pudimos actualizar el pedido. Consulta su estado antes de volver a intentarlo.'
+            status = 503
+        else:
+            return redirect('order_detail', public_id=order.public_id)
+    context['progress'] = order_progress(order)
+    return render(request, 'orders/cancel.html', {**store_context(), **context}, status=status)

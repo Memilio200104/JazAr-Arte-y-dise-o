@@ -1,13 +1,23 @@
 from django import forms
 from django.contrib import admin, messages
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.db import DatabaseError
+from django.db import DatabaseError, transaction
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.views.decorators.http import require_POST
 from .models import Order, OrderItem, OrderReviewEvent
 from .services import review_order, ReviewConflict
+from shipping.models import Shipment
+from shipping.tracking import register_shipment
+from payments.models import Refund
+
+
+class ShipmentForm(forms.ModelForm):
+    class Meta:
+        model = Shipment
+        fields = ('carrier', 'tracking_number', 'tracking_url', 'status')
+        help_texts = {'tracking_url': 'Copia el enlace público HTTPS de la guía creada en Envia. No pegues enlaces del panel privado.'}
 
 
 class ReviewForm(forms.Form):
@@ -57,14 +67,41 @@ class OrderAdmin(admin.ModelAdmin):
     def has_change_permission(self,request,obj=None): return False
 
     def get_urls(self):
-        return [path('<int:object_id>/review/',self.admin_site.admin_view(require_POST(self.review)),name='orders_order_review')]+super().get_urls()
+        return [path('<int:object_id>/review/',self.admin_site.admin_view(require_POST(self.review)),name='orders_order_review'),
+            path('<int:object_id>/shipment/',self.admin_site.admin_view(require_POST(self.shipment)),name='orders_order_shipment')]+super().get_urls()
 
     def change_view(self,request,object_id,form_url='',extra_context=None):
         order=get_object_or_404(Order,pk=object_id)
         context=dict(extra_context or {})
+        context['cancellation'] = Refund.objects.filter(attempt__order=order).first()
+        if context['cancellation']:
+            context['cancellation_url'] = reverse('admin:payments_refund_change', args=[context['cancellation'].pk])
+        if request.user.has_perm('shipping.manage_shipment') and order.payment_attempts.filter(state='paid').exists() and not context['cancellation']:
+            context.update(shipment_form=ShipmentForm(instance=Shipment.objects.filter(order=order).first()),
+                           shipment_url=reverse('admin:orders_order_shipment',args=[order.pk]))
         if request.user.has_perm('orders.approve_order'):
             context.update(review_form=ReviewForm(initial={'approved':order.review_status=='approved','changes':order.review_status=='changes','note':order.review_note,'version':order.version}),review_url=reverse('admin:orders_order_review',args=[order.pk]))
         return super().change_view(request,object_id,form_url,context)
+
+    @transaction.atomic
+    def shipment(self, request, object_id):
+        order = get_object_or_404(Order, pk=object_id)
+        if not self.has_view_permission(request, order) or not request.user.has_perm('shipping.manage_shipment'):
+            raise PermissionDenied
+        form = ShipmentForm(request.POST)
+        if form.is_valid():
+            try:
+                shipment = register_shipment(request.user, order.pk, **form.cleaned_data)
+                self.log_change(request, order, f'Guía: {shipment.carrier} / {shipment.tracking_number}; {shipment.get_status_display()}')
+            except ValidationError as exc:
+                form.add_error(None, exc)
+            else:
+                messages.success(request, 'Guía guardada. El cliente puede verla en Mis pedidos.')
+                return redirect('admin:orders_order_change', order.pk)
+        return TemplateResponse(request, 'admin/orders/order/shipment_error.html', {
+            **self.admin_site.each_context(request), 'title': 'Registrar guía', 'shipment_form': form,
+            'shipment_url': reverse('admin:orders_order_shipment',args=[order.pk]),
+            'back_url': reverse('admin:orders_order_change',args=[order.pk])}, status=400)
 
     def review(self,request,object_id):
         order=get_object_or_404(Order,pk=object_id)

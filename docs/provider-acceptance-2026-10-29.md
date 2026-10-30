@@ -37,4 +37,4 @@ Evidencias locales ignoradas por Git: `artifacts/provider-qa/pago-confirmado.png
 
 ## Pendientes del Modulo 2
 
-La integracion sandbox de cotizacion, cobro y webhooks ya tiene evidencia de extremo a extremo. Aun falta definir y ejecutar cancelaciones/reembolsos (inicio de las 24 horas, base del limite menor a 2000 MXN y tratamiento del envio) y acordar la operacion de guias y seguimiento. Validar empaques fisicos antes de ventas reales. No habilitar claves live ni desplegar por esta verificacion. Gmail y el panel propio de Jazmin permanecen en Modulo 3.
+La integracion sandbox de cotizacion, cobro y webhooks tiene evidencia de extremo a extremo. Cancelaciones y seguimiento quedaron definidos y se implementaron en la continuacion: ver [cancelaciones y seguimiento](cancellations-tracking.md), incluida devolucion de los 599.51 MXN de prueba. Validar empaques fisicos antes de ventas reales. No habilitar claves live ni desplegar por esta verificacion. Gmail y el panel propio de Jazmin permanecen en Modulo 3.

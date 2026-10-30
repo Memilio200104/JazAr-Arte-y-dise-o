@@ -1,6 +1,6 @@
 # Modulo 2: requisitos recibidos
 
-19 de octubre de 2026. Registro de decisiones del usuario; no es una especificacion tecnica aprobada ni activa pagos.
+Registro iniciado el 19 de octubre de 2026; actualizado al 30 de octubre con decisiones aprobadas e implementacion de pruebas. No activa cobros reales.
 
 ## Confirmado
 
@@ -11,7 +11,7 @@
 - Stripe cobra solamente despues de que Jazmin apruebe el diseno. Enviar un pedido a revision no debe generar un cobro.
 - El envio se calcula dinamicamente y se cobra dentro del sitio junto con la compra. No sustituir este flujo por una cotizacion manual por WhatsApp.
 - El sitio ofrece unicamente envio. Una posible recogida se acuerda directamente con Jazmin por WhatsApp, fuera del checkout.
-- Politica comercial propuesta: cancelacion dentro de las primeras 24 horas desde realizar el pedido y para montos estrictamente menores a 2,000 MXN. No se ha afirmado su suficiencia legal.
+- Politica comercial confirmada: cancelacion antes de cumplir 24 horas desde el pago, para un total pagado estrictamente menor a 2,000 MXN incluido el envio. Devolucion completa al medio original. No se ha afirmado su suficiencia legal.
 - Despliegue a cargo del usuario. El acuerdo previo era terminar ambos modulos antes de desplegar; la incorporacion del Modulo 3 no establece una nueva fecha de despliegue. Gmail y las alertas operativas pasan al Modulo 3 por la aclaracion posterior.
 
 ## Modulo 3: alcance solicitado posteriormente
@@ -42,11 +42,12 @@ No copiar direccion, origen postal, embalajes de consolas ni estimaciones de pes
 - Stripe Checkout alojado elegido: redirigir a la pagina de Stripe y volver al pedido.
 - El usuario aprueba el diseno de envios/pago con esta correccion: agrupar productos compatibles en cajas compartidas por envio, no cotizar automaticamente un paquete por unidad. Se permiten varias cajas cuando capacidad, peso o proteccion lo requieren. Pesos y capacidades provisionales se validaran antes de ventas reales.
 
-## Preguntas abiertas para la especificacion
+## Decisiones resueltas y pendientes operativos
 
-- Cuenta de pruebas de Envia.com, credenciales, validacion del origen por el proveedor, cobertura, pesos y dimensiones de paquetes. Definir vigencia y recotizacion de tarifas antes del pago.
-- Definir inicio de las 24 horas de cancelacion (creacion del pedido o pago posterior a la aprobacion) y base del limite: subtotal de productos o total pagado con envio; procedimiento y monto de reembolso, tratamiento de pedidos ya en produccion.
-- Reserva de stock, momento de liberacion y entrega estimada. Las variantes comparten las 30 unidades del producto.
-- Verificacion y recuperacion de cuenta durante pruebas sin Gmail real.
+- Envia sandbox y Stripe test configurados y verificados con proveedores. Tarifas vigentes 10 minutos y recotizacion previa al pago implementadas. Pesos, dimensiones y acomodo fisico pendientes de confirmacion de Jazmin para ventas reales.
+- Cancelaciones: fecha canonica del cargo, 24 horas desde el pago, total menor a $2,000 MXN con envio y devolucion completa. Implementacion y ensayo Stripe completados; ver [operacion](cancellations-tracking.md). No se agrega una exclusion por produccion/envio no autorizada; Jazmin debe detener preparacion y gestionar cualquier guia en Envia. No se repone inventario automaticamente.
+- Guias generadas manualmente en Envia y registradas desde Django admin. Cliente consulta seguimiento en Mis pedidos. Sin compra de etiquetas por API ni sincronizacion automatica del transportista.
+- Reserva y consumo de stock idempotentes implementados; liberacion solo ante expiracion confirmada o rechazo definitivo seguro. Las variantes comparten existencias. Entrega estimada depende del transportista y produccion.
+- Verificacion y recuperacion de cuenta disponibles mediante backend de correo local; Gmail real y avisos siguen en Modulo 3.
 
-Cuentas y solicitudes implementadas con especificaciones y planes aprobados en docs/superpowers. La revision administrativa no realiza cobros. Envio agrupado, reservas y Stripe Checkout de pruebas implementados: ver docs/shipping-checkout-progress.md para verificaciones y pendientes externos. Sin credenciales no se ha validado el recorrido sandbox real. El panel propio del sitio y Gmail pertenecen al Modulo 3. La cuenta administrativa local no equivale a una cuenta de comprador.
+Cuentas y solicitudes implementadas con especificaciones y planes aprobados en docs/superpowers. La revision administrativa no realiza cobros. Envio agrupado, reservas, Stripe Checkout, cancelaciones y seguimiento implementados: ver docs/shipping-checkout-progress.md y docs/cancellations-tracking.md. El recorrido sandbox tiene evidencia; no equivale a activacion live. El panel propio del sitio y Gmail pertenecen al Modulo 3. La cuenta administrativa local no equivale a una cuenta de comprador.
