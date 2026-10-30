@@ -39,7 +39,7 @@ La cuenta y su correo solo viven en SQLite local, no en Git. En otra maquina se 
 
 - Contenido comercial aprobado por el usuario.
 - Despliegue a cargo del usuario, una vez terminados ambos modulos.
-- Gmail real y notificaciones operativas quedan para el Modulo 3. Mantener `CONTACT_LOCAL_MODE=1` durante estas pruebas: el formulario no envia correos reales y lo informa.
+- Gmail real y notificaciones por correo quedan para el Modulo 3.5. El Modulo 3 corresponde al panel propio de Jazmin; ver [roadmap vigente](docs/roadmap-modulos-3-y-3-5.md). Mantener `CONTACT_LOCAL_MODE=1` durante estas pruebas: el formulario no envia correos reales y lo informa.
 - Operacion reportada como probada por el usuario; no equivale a una validacion adicional del servidor realizada por Codex.
 - Los productos fijos abren una ficha propia y se agregan a una seleccion local en `/carrito/`. Continuar permite crear una solicitud real desde `/pedido/solicitud/`, con cuenta, direccion y resumen confirmado. No reserva stock ni cobra.
 - Registro, ingreso por correo, recuperacion, perfil, direcciones y solicitudes ya tienen backend. Jazmin aprueba desde Django Admin; el cliente consulta `/cuenta/pedidos/`. Los pedidos aprobados abren envio y pago: cotizacion Envia sandbox, reserva de stock y Stripe Checkout alojado en modo pruebas. Se requieren credenciales para probar la conexion externa; no hay cobros reales habilitados.

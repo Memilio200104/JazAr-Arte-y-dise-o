@@ -30,4 +30,4 @@ Para restaurar, detener web, conservar una copia del estado actual, restaurar la
 
 El estado actualizado de pruebas se registra en `docs/modulo-1-estado.md`. UI UX Pro Max aplicado a overflow y legibilidad; Web Design Guidelines revisado para labels, dimensiones de imagen, alt y foco. Esto no constituye una certificacion de accesibilidad.
 
-El usuario reporta la operacion probada y se encarga del despliegue despues de ambos modulos. El agente no verifico Docker, SMTP Gmail, dominio o HTTPS reales. Gmail se configura al final del Modulo 2. Antes de exponer /admin/ exigir HTTPS y limitar intentos de acceso en la infraestructura; no publicar el panel con DEBUG activo.
+El usuario reporta la operacion probada y se encarga del despliegue despues de ambos modulos. El agente no verifico Docker, SMTP Gmail, dominio o HTTPS reales. El panel propio de Jazmin corresponde al Modulo 3; Gmail se configura despues, en el Modulo 3.5. Antes de exponer /admin/ exigir HTTPS y limitar intentos de acceso en la infraestructura; no publicar el panel con DEBUG activo.

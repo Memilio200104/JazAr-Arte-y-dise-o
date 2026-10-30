@@ -62,4 +62,4 @@ Cancelación inspeccionada en escritorio y 390px (botón de 51.6px de altura, si
 
 ## Antes de ventas reales
 
-Validar empaques físicos con Jazmin, preparar claves y configuración live en una fase de activación explícita, configurar eventos y conciliación del servidor, y comprobar un recorrido operativo autorizado. El bloqueo a claves live sigue vigente. Gmail y el portal propio de Jazmin siguen en Módulo 3; el despliegue lo realiza el usuario.
+Validar empaques físicos con Jazmin, preparar claves y configuración live en una fase de activación explícita, configurar eventos y conciliación del servidor, y comprobar un recorrido operativo autorizado. El bloqueo a claves live sigue vigente. El portal propio de Jazmin corresponde al Módulo 3 y Gmail al Módulo 3.5; el despliegue lo realiza el usuario.

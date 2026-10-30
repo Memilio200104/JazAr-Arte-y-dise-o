@@ -12,14 +12,16 @@ Registro iniciado el 19 de octubre de 2026; actualizado al 30 de octubre con dec
 - El envio se calcula dinamicamente y se cobra dentro del sitio junto con la compra. No sustituir este flujo por una cotizacion manual por WhatsApp.
 - El sitio ofrece unicamente envio. Una posible recogida se acuerda directamente con Jazmin por WhatsApp, fuera del checkout.
 - Politica comercial confirmada: cancelacion antes de cumplir 24 horas desde el pago, para un total pagado estrictamente menor a 2,000 MXN incluido el envio. Devolucion completa al medio original. No se ha afirmado su suficiencia legal.
-- Despliegue a cargo del usuario. El acuerdo previo era terminar ambos modulos antes de desplegar; la incorporacion del Modulo 3 no establece una nueva fecha de despliegue. Gmail y las alertas operativas pasan al Modulo 3 por la aclaracion posterior.
+- Despliegue a cargo del usuario. El acuerdo previo era terminar ambos modulos antes de desplegar; la incorporacion del Modulo 3 no establece una nueva fecha de despliegue. El panel propio queda en Modulo 3; Gmail y las alertas por correo pasan al Modulo 3.5 segun la division acordada el 30 de octubre.
 
-## Modulo 3: alcance solicitado posteriormente
+## Modulos 3 y 3.5: alcance solicitado posteriormente
+
+Referencia vigente: [roadmap de panel y Gmail](roadmap-modulos-3-y-3-5.md). Primero el panel (3), despues el correo (3.5).
 
 - Jazmin debe poder ver todos los pedidos y registrar su aprobacion despues de revisar el diseno por WhatsApp. La aprobacion registrada en el sitio sera requisito para permitir el pago; un mensaje de WhatsApp no cambia estados automaticamente.
 - Cuenta administrativa con permisos para gestionar productos, existencias y usuarios (incluido bloqueo), ademas de pedidos. En Modulo 3 estas operaciones se haran desde una interfaz propia del sitio, sin necesidad de entrar al Django admin. No conceder estos permisos a compradores.
-- Avisos por Gmail: nuevos pedidos para Jazmin, aprobacion del diseno, solicitud de cambios y cambios de estado para el cliente, entre otras alertas por especificar.
-- Modulo 2: aprobado usar Django Admin para que exclusivamente Jazmin/personal autorizado marque "Diseno revisado y aprobado por Jazmin". Registrar quien aprueba y cuando; el comprador no puede aprobar. El servidor debe impedir el pago sin aprobacion. La interfaz propia con control animado y las notificaciones quedan en Modulo 3.
+- Modulo 3.5, avisos por Gmail: nuevos pedidos para Jazmin, aprobacion del diseno, solicitud de cambios y cambios de estado para el cliente, entre otras alertas por especificar.
+- Modulo 2: aprobado usar Django Admin para que exclusivamente Jazmin/personal autorizado marque "Diseno revisado y aprobado por Jazmin". Registrar quien aprueba y cuando; el comprador no puede aprobar. El servidor debe impedir el pago sin aprobacion. La interfaz propia con control animado queda en Modulo 3; las notificaciones por correo, en Modulo 3.5.
 - La eliminacion de productos con historial de compra requiere conservar las referencias del pedido; proponer archivado en vez de destruir el historial.
 
 ## Envios: fuente solicitada
@@ -48,6 +50,6 @@ No copiar direccion, origen postal, embalajes de consolas ni estimaciones de pes
 - Cancelaciones: fecha canonica del cargo, 24 horas desde el pago, total menor a $2,000 MXN con envio y devolucion completa. Implementacion y ensayo Stripe completados; ver [operacion](cancellations-tracking.md). No se agrega una exclusion por produccion/envio no autorizada; Jazmin debe detener preparacion y gestionar cualquier guia en Envia. No se repone inventario automaticamente.
 - Guias generadas manualmente en Envia y registradas desde Django admin. Cliente consulta seguimiento en Mis pedidos. Sin compra de etiquetas por API ni sincronizacion automatica del transportista.
 - Reserva y consumo de stock idempotentes implementados; liberacion solo ante expiracion confirmada o rechazo definitivo seguro. Las variantes comparten existencias. Entrega estimada depende del transportista y produccion.
-- Verificacion y recuperacion de cuenta disponibles mediante backend de correo local; Gmail real y avisos siguen en Modulo 3.
+- Verificacion y recuperacion de cuenta disponibles mediante backend de correo local; Gmail real y avisos por correo quedan en Modulo 3.5.
 
-Cuentas y solicitudes implementadas con especificaciones y planes aprobados en docs/superpowers. La revision administrativa no realiza cobros. Envio agrupado, reservas, Stripe Checkout, cancelaciones y seguimiento implementados: ver docs/shipping-checkout-progress.md y docs/cancellations-tracking.md. El recorrido sandbox tiene evidencia; no equivale a activacion live. El panel propio del sitio y Gmail pertenecen al Modulo 3. La cuenta administrativa local no equivale a una cuenta de comprador.
+Cuentas y solicitudes implementadas con especificaciones y planes aprobados en docs/superpowers. La revision administrativa no realiza cobros. Envio agrupado, reservas, Stripe Checkout, cancelaciones y seguimiento implementados: ver docs/shipping-checkout-progress.md y docs/cancellations-tracking.md. El recorrido sandbox tiene evidencia; no equivale a activacion live. El panel propio del sitio pertenece al Modulo 3 y Gmail al Modulo 3.5. La cuenta administrativa local no equivale a una cuenta de comprador.
